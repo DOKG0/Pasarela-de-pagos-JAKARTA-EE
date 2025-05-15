@@ -20,8 +20,6 @@ public class Comercio {
     private List<Pos> poses = new ArrayList<>();
     private List<Reclamo> reclamos = new ArrayList<>();
 
-
-    // Métodos de negocio
     public void agregarPos(Pos pos) {
         this.poses.add(pos);
     }

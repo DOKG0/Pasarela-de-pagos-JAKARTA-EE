@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pos {
+public class Comercio {
     private Integer id;
-    private String identificador;
-    private boolean habilitado;
+    private String nombre;
+    private String rut;
+    private String direccion;
+    
 }

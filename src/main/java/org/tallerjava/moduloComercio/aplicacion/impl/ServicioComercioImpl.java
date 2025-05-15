@@ -52,4 +52,8 @@ public class ServicioComercioImpl implements ServicioComercio {
         return reclamo.getId();
     }
 
+    @Override
+    public boolean realizarPago(double importe) {
+        return true;
+    }
 }

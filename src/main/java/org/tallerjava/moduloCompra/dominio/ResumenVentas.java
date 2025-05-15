@@ -1,6 +1,4 @@
 package org.tallerjava.moduloCompra.dominio;
-
-import org.tallerjava.moduloComercio.dominio.Comercio;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;

@@ -1,6 +1,4 @@
 package org.tallerjava.moduloCompra.dominio;
-
-import org.tallerjava.moduloComercio.dominio.Comercio;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +14,8 @@ public class Compra {
     private double monto;
     private LocalDateTime fecha;
     private EstadoCompra estado;
-    private String codigoAutorizacion;
+    
+    //private String codigoAutorizacion;
     
     public Compra(Comercio comercio, double monto) {
         this.comercio = comercio;
@@ -25,9 +24,9 @@ public class Compra {
         this.estado = EstadoCompra.PENDIENTE;
     }
     
-    public void marcarComoAprobada(String codigoAutorizacion) {
+    public void marcarComoAprobada() {
         this.estado = EstadoCompra.APROBADA;
-        this.codigoAutorizacion = codigoAutorizacion;
+        //this.codigoAutorizacion = codigoAutorizacion;
     }
     
     public void marcarComoRechazada() {
