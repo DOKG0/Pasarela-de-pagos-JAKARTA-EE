@@ -14,8 +14,8 @@ public class ServicioComercioImpl implements ServicioComercio {
     private RepositorioComercio repositorio;
 
     @Override
-    public Integer altaComercio(Comercio datosComercio) {
-        return repositorio.guardarComercio(datosComercio);
+    public Integer altaComercio(Comercio comercio) {
+        return repositorio.guardarComercio(comercio);
     }
 
     @Override
@@ -24,9 +24,12 @@ public class ServicioComercioImpl implements ServicioComercio {
     }
 
     @Override
-    public Integer altaPos(Comercio comercio, Pos pos) {
+    public Integer altaPos(Integer idComercio, Pos pos) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
         comercio.agregarPos(pos);
+        pos.setComercio(comercio);
         repositorio.actualizarComercio(comercio);
+
         return pos.getId();
     }
 
