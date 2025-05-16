@@ -38,7 +38,10 @@ public class Comercio {
         cascade = CascadeType.ALL)
     private List<Pos> poses = new ArrayList<Pos>();
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(
+        orphanRemoval = true,
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL)
     @JoinColumn(name="id_comercio")
     private List<Reclamo> reclamos = new ArrayList<Reclamo>();
 
@@ -50,5 +53,13 @@ public class Comercio {
         this.reclamos.add(reclamo);
     }
 
+    public Pos buscarPosPorId(Integer identificadorPos) {
+        for (Pos pos : this.poses) {
+            if (pos.getId().equals(identificadorPos)) {
+                return pos;
+            }
+        }
+        return null;
+    }
     
 }
