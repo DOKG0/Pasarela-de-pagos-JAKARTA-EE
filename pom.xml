@@ -102,6 +102,18 @@
 			<version>1.13.0</version>
 		</dependency>
 
+		<!-- SWAGGER -->
+		<!-- Se accede desde el url: http://localhost:8080/TallerJakartaEEPasarelaPagos/dist/#/ -->
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-jaxrs2-jakarta</artifactId>
+			<version>2.2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-jaxrs2-servlet-initializer-v2-jakarta</artifactId>
+			<version>2.2.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -26,7 +26,8 @@ public class ComercioRepositorioImpl implements RepositorioComercio {
                 return merged.getId();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error al guardar comercio", e);
+            // throw new RuntimeException("Error al guardar comercio", e);
+            return -1;
         }
     }
 
@@ -40,7 +41,8 @@ public class ComercioRepositorioImpl implements RepositorioComercio {
             }
             return false;
         } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar comercio", e);
+            // throw new RuntimeException("Error al actualizar comercio", e);
+            return false;
         }
     }
 

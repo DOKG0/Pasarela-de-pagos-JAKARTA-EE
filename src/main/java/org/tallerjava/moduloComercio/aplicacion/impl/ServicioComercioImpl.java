@@ -4,7 +4,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
-import org.tallerjava.moduloComercio.dominio.*;
+import org.tallerjava.moduloComercio.dominio.Comercio;
+import org.tallerjava.moduloComercio.dominio.Pos;
+import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 
 @ApplicationScoped
@@ -14,42 +16,92 @@ public class ServicioComercioImpl implements ServicioComercio {
     private RepositorioComercio repositorio;
 
     @Override
-    public Integer altaComercio(Comercio datosComercio) {
-        return repositorio.guardarComercio(datosComercio);
+    public Integer altaComercio(Comercio comercio) {
+        return repositorio.guardarComercio(comercio);
     }
 
     @Override
-    public boolean modificarDatosComercio(Comercio datosComercio) {
-        return repositorio.actualizarComercio(datosComercio);
+    public boolean modificarDatosComercio(Integer id, String rut, String nombre, String direccion) {
+        Comercio comercio = repositorio.buscarPorId(id);
+        comercio.setNombre(
+            nombre == null ? comercio.getNombre() : nombre
+        );
+        comercio.setDireccion(
+            direccion == null ? comercio.getDireccion() : direccion
+        );
+        comercio.setRut(
+            rut == null ? comercio.getRut() : rut
+        );
+
+        return repositorio.actualizarComercio(comercio);
     }
 
     @Override
-    public Integer altaPos(Comercio comercio, Pos pos) {
+    public Integer altaPos(Integer idComercio, Pos pos) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+
+        if (comercio == null) {
+            return -1;
+        }
+
         comercio.agregarPos(pos);
+        pos.setComercio(comercio);
         repositorio.actualizarComercio(comercio);
+
         return pos.getId();
     }
 
     @Override
-    public boolean cambiarEstadoPos(Comercio comercio, Pos pos, boolean estado) {
+    public boolean cambiarEstadoPos(Integer idComercio, Integer identificadorPos, boolean estado) {
+
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) {
+            return false;
+        }
+
+        Pos pos = comercio.buscarPosPorId(identificadorPos);
+
+        if (pos == null) {
+            return false;
+        }
+
         pos.setHabilitado(estado);
         return repositorio.actualizarComercio(comercio);
     }
 
     @Override
-    public boolean cambioContraseña(String nuevaPass) {
-        Comercio comercio = new Comercio(); // Toca cambiarlo a un get Comercio por parametros o agregar id a este
+    public boolean cambioContraseña(Integer idComercio, String nuevaPass) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+
+        if (comercio == null) {
+            return false;
+        }
+
         comercio.setContraseña(nuevaPass);
         return repositorio.actualizarComercio(comercio);
     }
 
     @Override
-    public Integer realizarReclamo(String textoReclamo) {
-        Comercio comercio = new Comercio(); // Toca cambiarlo a un get Comercio por parametros o agregar id a este
-        Reclamo reclamo = new Reclamo(textoReclamo);
+    public Integer realizarReclamo(Integer idComercio, Reclamo reclamo) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+
+        if (comercio == null) {
+            return -1;
+        }
+
         comercio.agregarReclamo(reclamo);
-        repositorio.actualizarComercio(comercio);
-        return reclamo.getId();
+        boolean actualizacionCorrecta = repositorio.actualizarComercio(comercio);
+
+        if (actualizacionCorrecta) {
+            Comercio comercioPostActualizacion = repositorio.buscarPorId(idComercio);
+            Reclamo ultimoReclamo = comercioPostActualizacion
+                .getReclamos()
+                .get(comercioPostActualizacion.getReclamos().size()-1);
+            Integer idNuevoReclamo = ultimoReclamo.getId();
+            return idNuevoReclamo;
+        } else {
+            return -1;
+        }
     }
 
     @Override
