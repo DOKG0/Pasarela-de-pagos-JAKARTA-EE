@@ -1,4 +1,4 @@
-package org.tallerjava.moduloComercio.interfase.remota;
+package org.tallerjava.moduloComercio.datatypes;
 
 import org.tallerjava.moduloComercio.dominio.Comercio;
 

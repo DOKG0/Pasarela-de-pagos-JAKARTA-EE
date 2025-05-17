@@ -11,7 +11,4 @@ public class ServicioComercioFacade {
     @Inject
     private ServicioComercio servicioPago;
 
-    public boolean realizarPago(double importe, Integer pos) {
-        return servicioPago.realizarPago(importe);
-    }
 }

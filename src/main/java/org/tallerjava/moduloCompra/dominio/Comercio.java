@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,16 +27,24 @@ import lombok.NoArgsConstructor;
 public class Comercio {
     @Id
     private Integer id;
+    private double importeVentasDelDia; //to do: implementar un schedule que lo resetee a 0 todos los dias
 
     @OneToMany(
         orphanRemoval = true, 
         fetch = FetchType.EAGER,
         cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "compras_comercio_MOD_COMPRA"
-    )
+    @JoinTable(name = "compras_comercio_MOD_COMPRA")
     private List<Compra> compras = new ArrayList<Compra>();
     
+    @OneToOne(
+        orphanRemoval = true, 
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL)
+    private CuentaBancoComercio cuentaBanco;
+
+    public void agregarCompra(Compra compra) {
+        compras.add(compra);
+    }
 
     public DTOResumenVentas getResumenVentasPorEstado(EstadoCompra estado) {
         DTOResumenVentas resumen = new DTOResumenVentas();

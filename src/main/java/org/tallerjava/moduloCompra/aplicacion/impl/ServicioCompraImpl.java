@@ -2,13 +2,17 @@ package org.tallerjava.moduloCompra.aplicacion.impl;
 
 import java.time.LocalDateTime;
 
+import javax.management.RuntimeErrorException;
+
 import org.tallerjava.moduloComercio.interfase.local.ServicioComercioFacade;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
+import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
+import org.tallerjava.servicioExterno.ServicioExternoMedioDePago;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -22,14 +26,32 @@ public class ServicioCompraImpl implements ServicioCompra{
     @Inject
     private ServicioComercioFacade serviceComercio;
 
+    @Inject
+    private ServicioExternoMedioDePago servicioExterno;
+
     @Override
-    public boolean procesarPago(Compra datosCompra) {
-        if (serviceComercio.realizarPago(0, null)) {
-            datosCompra.setEstado(EstadoCompra.APROBADA);
-            return true;
+    public boolean procesarPago(Integer idComercio, double importe, Tarjeta datosTarjeta) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) return false;
+
+        Compra nuevaCompra = new Compra(importe);
+        
+        boolean resultado = servicioExterno.procesarPago(
+            comercio.getCuentaBanco().getNumeroCuenta(), 
+            importe, 
+            datosTarjeta);
+
+        if (resultado) {
+            nuevaCompra.setEstado(EstadoCompra.APROBADA);
+            comercio.setImporteVentasDelDia(comercio.getImporteVentasDelDia() + importe);
+        } else {
+            nuevaCompra.setEstado(EstadoCompra.RECHAZADA);
         }
-        datosCompra.setEstado(EstadoCompra.RECHAZADA);
-        return false;
+
+        comercio.agregarCompra(nuevaCompra);
+        repositorio.actualizarComercio(comercio);
+
+        return resultado;
     }
 
     @Override
@@ -37,7 +59,7 @@ public class ServicioCompraImpl implements ServicioCompra{
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return null;
         //to do: resolver fechas de un dia con localdatetime
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'resumenVentasDiarias'");
     }
 
     @Override
@@ -60,8 +82,10 @@ public class ServicioCompraImpl implements ServicioCompra{
 
 
     @Override
-    public double montoActualVendido(Comercio comercio) {
-        throw new UnsupportedOperationException("Unimplemented method 'montoActualVendido'");
+    public double montoActualVendido(Integer idComercio) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+
+        return comercio.getImporteVentasDelDia();
     }
 
 }

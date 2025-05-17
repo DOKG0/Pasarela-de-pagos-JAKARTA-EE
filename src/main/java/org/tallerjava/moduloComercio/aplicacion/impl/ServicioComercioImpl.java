@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
 import org.tallerjava.moduloComercio.dominio.Comercio;
+import org.tallerjava.moduloComercio.dominio.CuentaBancoComercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
@@ -22,14 +23,26 @@ public class ServicioComercioImpl implements ServicioComercio {
     public Integer altaComercio(Comercio comercio) {
 
         Integer idComercio = repositorio.guardarComercio(comercio);
-        publicador.publicarEventoComercio(idComercio);
 
+        if (idComercio != -1) { //solo si se creo correctamente el comercio
+            Comercio nuevoComercio = repositorio.buscarPorId(idComercio);
+            CuentaBancoComercio nuevaCuentaBanco = nuevoComercio.getCuentaBancoComercio();
+
+            publicador.publicarEventoComercio(
+                idComercio, 
+                nuevaCuentaBanco.getNumeroCuenta(),
+                nuevaCuentaBanco.getId()
+                );
+        }
+       
         return idComercio;
     }
 
     @Override
     public boolean modificarDatosComercio(Integer id, String rut, String nombre, String direccion) {
         Comercio comercio = repositorio.buscarPorId(id);
+        if (comercio == null) return false;
+
         comercio.setNombre(
             nombre == null ? comercio.getNombre() : nombre
         );
@@ -47,30 +60,30 @@ public class ServicioComercioImpl implements ServicioComercio {
     public Integer altaPos(Integer idComercio, Pos pos) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
 
-        if (comercio == null) {
-            return -1;
-        }
+        if (comercio == null) return -1;
 
         comercio.agregarPos(pos);
         pos.setComercio(comercio);
-        repositorio.actualizarComercio(comercio);
+        boolean resultado = repositorio.actualizarComercio(comercio);
 
-        return pos.getId();
+        if (resultado) {
+            Comercio comercioActualizado = repositorio.buscarPorId(idComercio);
+            Pos nuevoPos = comercioActualizado.buscarPosPorIdentificador(pos.getIdentificador());
+            return nuevoPos.getId();
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public boolean cambiarEstadoPos(Integer idComercio, Integer identificadorPos, boolean estado) {
 
         Comercio comercio = repositorio.buscarPorId(idComercio);
-        if (comercio == null) {
-            return false;
-        }
+        if (comercio == null) return false;
 
         Pos pos = comercio.buscarPosPorId(identificadorPos);
 
-        if (pos == null) {
-            return false;
-        }
+        if (pos == null) return false;
 
         pos.setHabilitado(estado);
         return repositorio.actualizarComercio(comercio);
@@ -80,9 +93,7 @@ public class ServicioComercioImpl implements ServicioComercio {
     public boolean cambioContraseña(Integer idComercio, String nuevaPass) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
 
-        if (comercio == null) {
-            return false;
-        }
+        if (comercio == null) return false;
 
         comercio.setContraseña(nuevaPass);
         return repositorio.actualizarComercio(comercio);
@@ -92,9 +103,7 @@ public class ServicioComercioImpl implements ServicioComercio {
     public Integer realizarReclamo(Integer idComercio, Reclamo reclamo) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
 
-        if (comercio == null) {
-            return -1;
-        }
+        if (comercio == null) return -1;
 
         comercio.agregarReclamo(reclamo);
         boolean actualizacionCorrecta = repositorio.actualizarComercio(comercio);
@@ -109,10 +118,5 @@ public class ServicioComercioImpl implements ServicioComercio {
         } else {
             return -1;
         }
-    }
-
-    @Override
-    public boolean realizarPago(double importe) {
-        return true;
     }
 }

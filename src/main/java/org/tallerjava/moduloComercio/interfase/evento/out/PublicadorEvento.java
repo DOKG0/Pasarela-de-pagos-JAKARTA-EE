@@ -9,8 +9,8 @@ public class PublicadorEvento {
     @Inject
     private Event<EventoComercio> eventoComercio;
 
-    public void publicarEventoComercio(Integer idComercio) {
-        EventoComercio evento = new EventoComercio(idComercio);
+    public void publicarEventoComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco) {
+        EventoComercio evento = new EventoComercio(idComercio, nroCuentaBancoComercio, idCuentaBanco);
         eventoComercio.fire(evento);
     }
 }

@@ -1,5 +1,6 @@
 package org.tallerjava.moduloCompra.infraestructura.persistencia;
 
+import org.tallerjava.moduloCompra.dominio.CuentaBancoComercio;
 import org.tallerjava.moduloComercio.interfase.evento.out.EventoComercio;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
@@ -43,7 +44,13 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     @Override
     public Integer guardarComercio(@Observes EventoComercio eventoComercio) {
         Comercio comercio = new Comercio();
-        comercio.setId(eventoComercio.getId());
+        comercio.setId(eventoComercio.getIdComercio());
+
+        CuentaBancoComercio cuentaBancoComercio = new CuentaBancoComercio();
+        cuentaBancoComercio.setId(eventoComercio.getIdCuentaBanco());
+        cuentaBancoComercio.setNumeroCuenta(eventoComercio.getNroCuentaBancoComercio());
+
+        comercio.setCuentaBanco(cuentaBancoComercio);;
 
         try {
             if (comercio.getId() == null) {

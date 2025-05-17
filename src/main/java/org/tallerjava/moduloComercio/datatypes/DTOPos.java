@@ -1,4 +1,4 @@
-package org.tallerjava.moduloComercio.interfase.remota;
+package org.tallerjava.moduloComercio.datatypes;
 
 import org.tallerjava.moduloComercio.dominio.Pos;
 
@@ -9,7 +9,6 @@ public class DTOPos {
     private Integer id;
     private String identificador;
     private boolean habilitado;
-    private Integer idComercio;
 
     public Pos buildPos() {
         Pos pos = new Pos();

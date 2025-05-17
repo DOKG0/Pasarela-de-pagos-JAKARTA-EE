@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventoComercio {
-    private Integer id;
+    private Integer idComercio;
+    private String nroCuentaBancoComercio;
+    private Integer idCuentaBanco;
 }

@@ -1,6 +1,12 @@
 package org.tallerjava.moduloComercio.interfase.remota;
 
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
+import org.tallerjava.moduloComercio.datatypes.DTOComercio;
+import org.tallerjava.moduloComercio.datatypes.DTOEstadoPos;
+import org.tallerjava.moduloComercio.datatypes.DTOModificacionComercio;
+import org.tallerjava.moduloComercio.datatypes.DTOPassword;
+import org.tallerjava.moduloComercio.datatypes.DTOPos;
+import org.tallerjava.moduloComercio.datatypes.DTOReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
 
@@ -23,9 +29,9 @@ public class ComercioAPI {
     @Inject
     private ServicioComercio servicioComercio;
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta-comercio -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "432151234513212", "contraseña": "1234"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "432151234513212", "contraseña": "1234", "nroCuentaBanco": "112233"}'
     @POST
-    @Path("/alta-comercio")
+    @Path("/alta")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response altaComercio(DTOComercio dataComercio) {
         Comercio nuevoComercio = dataComercio.buildComercio();
@@ -45,11 +51,11 @@ public class ComercioAPI {
     }
 
     //actualizo solo el rut pero mano los demas campos igual
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "111112222233333"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 123","nombre":"La verduleria", "rut": "88998899889912"}'
     //actualizo solo la direccion, envio solo ese campo
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
     //el campo no se actualiza si se envia null
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
     @POST
     @Path("/{idComercio}/modificacion")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -76,15 +82,18 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta-pos -H "Content-Type: application/json" -d '{"idComercio": "4","identificador":"pos1"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
     @POST
-    @Path("/alta-pos")
+    @Path("/{idComercio}/pos/alta")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response altaPos(DTOPos datosPos) {
+    public Response altaPos(
+        @PathParam("idComercio") Integer idComercio, 
+        DTOPos datosPos) {
+
         Pos nuevoPos = new Pos();
         nuevoPos.setIdentificador(datosPos.getIdentificador());
 
-        Integer resultado = servicioComercio.altaPos(datosPos.getIdComercio(), nuevoPos);
+        Integer resultado = servicioComercio.altaPos(idComercio, nuevoPos);
 
         if (resultado != -1) {
             return Response
@@ -99,7 +108,7 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/pos/3/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
     @POST
     @Path("/{idComercio}/pos/{idPos}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -122,7 +131,7 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
     @POST
     @Path("/{idComercio}/password")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -144,7 +153,7 @@ public class ComercioAPI {
             }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/4/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
     @POST
     @Path("/{idComercio}/reclamo")
     @Consumes(MediaType.APPLICATION_JSON)
