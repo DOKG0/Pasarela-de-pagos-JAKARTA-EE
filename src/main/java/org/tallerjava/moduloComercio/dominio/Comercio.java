@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name="comercio")
+@Entity(name="comercio_MOD_COMERCIO")
+@Table(name="comercio_MOD_COMERCIO")
 public class Comercio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

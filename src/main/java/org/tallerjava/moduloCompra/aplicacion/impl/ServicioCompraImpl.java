@@ -1,15 +1,19 @@
 package org.tallerjava.moduloCompra.aplicacion.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.tallerjava.moduloComercio.interfase.local.ServicioComercioFacade;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
-import org.tallerjava.moduloCompra.dominio.ResumenVentas;
+import org.tallerjava.moduloCompra.dominio.EstadoCompra;
+import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+@ApplicationScoped
 public class ServicioCompraImpl implements ServicioCompra{
     
     @Inject
@@ -21,22 +25,39 @@ public class ServicioCompraImpl implements ServicioCompra{
     @Override
     public boolean procesarPago(Compra datosCompra) {
         if (serviceComercio.realizarPago(0, null)) {
-            datosCompra.marcarComoAprobada();
+            datosCompra.setEstado(EstadoCompra.APROBADA);
             return true;
         }
-        datosCompra.marcarComoRechazada();
+        datosCompra.setEstado(EstadoCompra.RECHAZADA);
         return false;
     }
 
     @Override
-    public ResumenVentas resumenVentasDiarias(Comercio comercio) {
-        throw new UnsupportedOperationException("Unimplemented method 'resumenVentasDiarias'");
+    public DTOResumenVentas resumenVentasDiarias(Integer idComercio) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) return null;
+        //to do: resolver fechas de un dia con localdatetime
+        return null;
     }
 
     @Override
-    public ResumenVentas resumenVentasPorPeriodo(Comercio comercio, LocalDate fechaInicio, LocalDate fechaFin) {
-        throw new UnsupportedOperationException("Unimplemented method 'resumenVentasPorPeriodo'");
+    public DTOResumenVentas resumenVentasPorPeriodo(
+        Integer idComercio, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) return null;
+
+        return comercio.getResumenVentasPorPeriodo(fechaInicio, fechaFin);
     }
+
+    @Override
+    public DTOResumenVentas resumenVentasPorEstado(Integer idComercio, EstadoCompra estado) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) return null;
+
+        return comercio.getResumenVentasPorEstado(estado);
+    }
+
 
     @Override
     public double montoActualVendido(Comercio comercio) {

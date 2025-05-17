@@ -8,16 +8,23 @@ import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
+import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
 
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
 
     @Inject
     private RepositorioComercio repositorio;
+    @Inject
+    private PublicadorEvento publicador;
 
     @Override
     public Integer altaComercio(Comercio comercio) {
-        return repositorio.guardarComercio(comercio);
+
+        Integer idComercio = repositorio.guardarComercio(comercio);
+        publicador.publicarEventoComercio(idComercio);
+
+        return idComercio;
     }
 
     @Override
