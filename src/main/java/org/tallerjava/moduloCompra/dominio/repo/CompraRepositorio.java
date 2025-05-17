@@ -1,12 +1,15 @@
 package org.tallerjava.moduloCompra.dominio.repo;
 
-import org.tallerjava.moduloComercio.dominio.Comercio;
+import org.tallerjava.moduloComercio.interfase.evento.out.EventoComercio;
+import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
-import org.tallerjava.moduloCompra.dominio.ResumenVentas;
-import java.time.LocalDate;
+
+import jakarta.enterprise.event.Observes;
 
 public interface CompraRepositorio {
-    void guardarCompra(Compra compra);
-    ResumenVentas obtenerResumenVentas(Comercio comercio, LocalDate fechaInicio, LocalDate fechaFin);
-    double obtenerMontoVentasDiaActual(Comercio comercio);
+    Integer guardarCompra(Compra compra);
+    double obtenerMontoVentasDiaActual(Integer idComercio);
+    Integer guardarComercio(@Observes EventoComercio eventoComercio);
+    boolean actualizarComercio(Comercio comercio);
+    Comercio buscarPorId(Integer id);
 }

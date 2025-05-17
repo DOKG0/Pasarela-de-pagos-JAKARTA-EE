@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +21,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name="comercio")
+@Entity(name="comercio_MOD_COMERCIO")
+@Table(name="comercio_MOD_COMERCIO")
 public class Comercio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +46,12 @@ public class Comercio {
     @JoinColumn(name="id_comercio")
     private List<Reclamo> reclamos = new ArrayList<Reclamo>();
 
+    @OneToOne(
+        orphanRemoval = true,
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL)
+    private CuentaBancoComercio cuentaBancoComercio;
+
     public void agregarPos(Pos pos) {
         this.poses.add(pos);
     }
@@ -53,9 +60,18 @@ public class Comercio {
         this.reclamos.add(reclamo);
     }
 
-    public Pos buscarPosPorId(Integer identificadorPos) {
+    public Pos buscarPosPorId(Integer id) {
         for (Pos pos : this.poses) {
-            if (pos.getId().equals(identificadorPos)) {
+            if (pos.getId().equals(id)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    public Pos buscarPosPorIdentificador(String identificadorPos) {
+        for (Pos pos : this.poses) {
+            if (pos.getIdentificador().equals(identificadorPos)) {
                 return pos;
             }
         }
