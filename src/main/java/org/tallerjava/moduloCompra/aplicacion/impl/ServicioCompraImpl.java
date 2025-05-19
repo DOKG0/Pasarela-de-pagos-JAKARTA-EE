@@ -55,14 +55,6 @@ public class ServicioCompraImpl implements ServicioCompra{
     }
 
     @Override
-    public DTOResumenVentas resumenVentasDiarias(Integer idComercio) {
-        Comercio comercio = repositorio.buscarPorId(idComercio);
-        if (comercio == null) return null;
-        //to do: resolver fechas de un dia con localdatetime
-        throw new UnsupportedOperationException("Unimplemented method 'resumenVentasDiarias'");
-    }
-
-    @Override
     public DTOResumenVentas resumenVentasPorPeriodo(
         Integer idComercio, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 

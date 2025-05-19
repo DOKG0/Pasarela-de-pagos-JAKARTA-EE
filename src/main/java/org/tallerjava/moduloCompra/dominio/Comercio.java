@@ -70,16 +70,23 @@ public class Comercio {
 
         DTOResumenVentas resumen = new DTOResumenVentas();
         resumen.setIdComercio(this.id);
-        resumen.setFechaInicio(fechaInicio);
-        resumen.setFechaFin(fechaFin);
+        resumen.setFechaInicio(fechaInicio.toString());
+        resumen.setFechaFin(fechaFin.toString());
 
         List<DTOCompra> compras = new ArrayList<DTOCompra>();
-        for (Compra c : this.compras) {
-            if (c.getFecha().isAfter(fechaInicio) && c.getFecha().isBefore(fechaFin)) {
+        for (Compra c : this.compras) { //se incluyen las fechas de inicio y fin dentro del periodo
+            if ((
+                    c.getFecha().toLocalDate().isAfter(fechaInicio.toLocalDate()) ||
+                    c.getFecha().toLocalDate().isEqual(fechaInicio.toLocalDate())
+                ) && (
+                    c.getFecha().toLocalDate().isBefore(fechaFin.toLocalDate()) ||
+                    c.getFecha().toLocalDate().isEqual(fechaFin.toLocalDate())
+                )) {
                 compras.add(c.getDTOCompra());
                 resumen.setMontoTotal(resumen.getMontoTotal() + c.getMonto());
             }
         }
+
         resumen.setCantidadVentas(compras.size());
         resumen.setVentas(compras);
 
