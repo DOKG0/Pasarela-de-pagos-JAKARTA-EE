@@ -12,6 +12,6 @@ import lombok.Data;
 public class DTOCompra {
     private Integer id;
     private double monto;
-    private LocalDateTime fecha;
+    private String fecha;
     private EstadoCompra estado;
 }

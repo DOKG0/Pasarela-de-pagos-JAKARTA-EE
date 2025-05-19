@@ -37,7 +37,7 @@ public class Compra {
         return new DTOCompra(
             this.getId(),
             this.getMonto(),
-            this.getFecha(),
+            this.getFecha().toString(),
             this.getEstado());
     }
 }

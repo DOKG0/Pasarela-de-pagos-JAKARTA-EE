@@ -18,6 +18,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -33,6 +34,7 @@ public class ComercioAPI {
     @POST
     @Path("/alta")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response altaComercio(DTOComercio dataComercio) {
         Comercio nuevoComercio = dataComercio.buildComercio();
         Integer resultado = servicioComercio.altaComercio(nuevoComercio);
@@ -51,7 +53,7 @@ public class ComercioAPI {
     }
 
     //actualizo solo el rut pero mano los demas campos igual
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 123","nombre":"La verduleria", "rut": "88998899889912"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 123","nombre":"NextRig", "rut": "88998899889912"}'
     //actualizo solo la direccion, envio solo ese campo
     //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
     //el campo no se actualiza si se envia null
@@ -59,6 +61,7 @@ public class ComercioAPI {
     @POST
     @Path("/{idComercio}/modificacion")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response modificacionComercio(
         @PathParam("idComercio") Integer idComercio,
         DTOModificacionComercio dataComercio) {
@@ -86,6 +89,7 @@ public class ComercioAPI {
     @POST
     @Path("/{idComercio}/pos/alta")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response altaPos(
         @PathParam("idComercio") Integer idComercio, 
         DTOPos datosPos) {
@@ -112,6 +116,7 @@ public class ComercioAPI {
     @POST
     @Path("/{idComercio}/pos/{idPos}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response cambiarEstadoPos(
         @PathParam("idComercio") int idComercio, 
         @PathParam("idPos") int idPos, 
@@ -135,6 +140,7 @@ public class ComercioAPI {
     @POST
     @Path("/{idComercio}/password")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response cambiarPassword(
         @PathParam("idComercio") Integer idComercio,
         DTOPassword dtoPw) {
@@ -157,6 +163,7 @@ public class ComercioAPI {
     @POST
     @Path("/{idComercio}/reclamo")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response realizarReclamo(
         DTOReclamo reclamo, 
         @PathParam("idComercio") Integer idComercio) {
