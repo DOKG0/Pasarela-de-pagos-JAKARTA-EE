@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
-import org.tallerjava.moduloCompra.dominio.datatypes.DTOPeriodo;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -73,16 +72,16 @@ public class CompraAPI {
             }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo -H "Content-Type: application/json" -d '{"fechaInicioStr": "2025-05-18", "fechaFinStr": "2025-05-18" }'
-    @POST
+    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-05-18"
+    @GET
     @Path("/{idComercio}/resumen/periodo")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response obtenerResumenDeVentasPorPeriodo(
         @PathParam("idComercio") Integer idComercio,
-        DTOPeriodo dtoPeriodo) {
+        @QueryParam("fechaInicio") String fechaInicioStr,
+        @QueryParam("fechaFin") String fechaFinStr) {
             /*
-                Se espera que la API reciba en el body las fechas en formato string
+                Se espera que la API reciba en el body las fechas en formato string por QueryParam
                 Se espera que siga el formato de LocalDate 'YYYY-MM-DD', que luego es convertido a LocalDateTime
                 Se busca facilitar la formacion del request
                 Ademas, la hora y la zona no es relevante para el caso de uso particular, 
@@ -91,14 +90,8 @@ public class CompraAPI {
             LocalDateTime fechaInicio = null, fechaFin = null;
 
             try {
-                fechaInicio = LocalDate.parse(dtoPeriodo.getFechaInicioStr()).atStartOfDay();
-                fechaFin = LocalDate.parse(dtoPeriodo.getFechaFinStr()).atTime(23,59,59);
-            } catch (Exception e) {
-                return Response
-                    .serverError()
-                    .entity("{\"error\": \"Error al procesar los parametros\"}")
-                    .status(500)
-                    .build();
+                fechaInicio = LocalDate.parse(fechaInicioStr).atStartOfDay();
+                fechaFin = LocalDate.parse(fechaFinStr).atTime(23,59,59);
             } finally {
                 if (fechaInicio == null || fechaFin == null) {
                     return Response
@@ -121,4 +114,5 @@ public class CompraAPI {
                 return Response.ok(resumen).build();
             }
     }
+
 }
