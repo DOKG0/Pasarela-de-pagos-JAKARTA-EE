@@ -10,6 +10,7 @@ import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
+import org.tallerjava.moduloSeguridad.aplicacion.ServicioSeguridad;
 
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
@@ -18,10 +19,16 @@ public class ServicioComercioImpl implements ServicioComercio {
     private RepositorioComercio repositorio;
     @Inject
     private PublicadorEvento publicador;
+    @Inject 
+    ServicioSeguridad servicioSeguridad;
 
     @Override
-    public Integer altaComercio(Comercio comercio) {
+    public Integer altaComercio(Comercio comercio, String password) {
 
+        boolean registroExitoso = servicioSeguridad.altaComercio(comercio.getUsuario(), password);
+        if (!registroExitoso) {
+            return -1; //salida temprana si no se creo correctamente el usuario
+        }
         Integer idComercio = repositorio.guardarComercio(comercio);
 
         if (idComercio != -1) { //solo si se creo correctamente el comercio
@@ -92,11 +99,11 @@ public class ServicioComercioImpl implements ServicioComercio {
     @Override
     public boolean cambioContraseña(Integer idComercio, String nuevaPass) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
-
         if (comercio == null) return false;
+        
+        String nombreUsuario = comercio.getUsuario();
 
-        comercio.setContraseña(nuevaPass);
-        return repositorio.actualizarComercio(comercio);
+        return servicioSeguridad.cambiarPassword(nombreUsuario, nuevaPass);
     }
 
     @Override

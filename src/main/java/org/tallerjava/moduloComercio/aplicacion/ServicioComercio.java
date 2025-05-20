@@ -5,7 +5,7 @@ import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 
 public interface ServicioComercio {
-    public Integer altaComercio(Comercio comercio);
+    public Integer altaComercio(Comercio comercio, String password);
     public boolean modificarDatosComercio(Integer id, String rut, String nombre, String direccion);
     public Integer altaPos(Integer idComercio, Pos pos);
     public boolean cambiarEstadoPos(Integer idComercio, Integer identificadorPos, boolean estado);

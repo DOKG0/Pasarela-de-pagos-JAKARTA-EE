@@ -2,12 +2,19 @@
 	xmlns="https://jakarta.ee/xml/ns/jakartaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+	
 	<servlet>
 		<servlet-name>jakarta.ws.rs.core.Application</servlet-name>
 	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>jakarta.ws.rs.core.Application</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
+
+	<context-param>
+	    <param-name>resteasy.role.based.security</param-name>
+	    <param-value>true</param-value>
+	</context-param>
 
 </web-app>

@@ -141,7 +141,6 @@
 					<version>${wildfly.version}</version>
 					<server-config>standalone-full.xml</server-config>
 					<add-user>
-
 						<users>
 							<user>
 								<username>root</username>
@@ -150,6 +149,11 @@
 							</user>
 						</users>
 					</add-user>
+
+					<commands>
+						<command>/subsystem=undertow/application-security-domain=other:write-attribute(name=integrated-jaspi,value=false)</command>   
+                        <command>reload</command>                 
+                    </commands>
 
 					<scripts>
 						<!-- ver archivo config.cli que está en ./ -->
