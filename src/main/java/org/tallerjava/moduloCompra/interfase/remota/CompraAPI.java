@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
+import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
@@ -115,4 +116,24 @@ public class CompraAPI {
             }
     }
 
+    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
+    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+    @GET
+    @Path("/{idComercio}/resumen/por-estado")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerResumenDeVentasDiario(
+        @PathParam("idComercio") Integer idComercio,
+        @QueryParam("estado") EstadoCompra estado) {
+
+        DTOResumenVentas resumen = servicioCompra.resumenVentasPorEstado(idComercio, estado);
+        if (resumen == null) {
+            return Response
+            .serverError()
+            .entity("{\"error\": \"Error al generar el resumen\"}")
+            .status(500)
+            .build();
+        } else {
+            return Response.ok(resumen).build();
+        }
+    }
 }
