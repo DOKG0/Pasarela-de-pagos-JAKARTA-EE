@@ -11,10 +11,10 @@ import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -30,14 +30,14 @@ public class ComercioAPI {
     @Inject
     private ServicioComercio servicioComercio;
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "432151234513212", "contraseña": "1234", "nroCuentaBanco": "112233"}'
+    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "112233"}'
     @POST
     @Path("/alta")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response altaComercio(DTOComercio dataComercio) {
         Comercio nuevoComercio = dataComercio.buildComercio();
-        Integer resultado = servicioComercio.altaComercio(nuevoComercio);
+        Integer resultado = servicioComercio.altaComercio(nuevoComercio, dataComercio.getPassword());
 
         if (resultado != -1) {
             return Response
@@ -53,15 +53,18 @@ public class ComercioAPI {
     }
 
     //actualizo solo el rut pero mano los demas campos igual
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 123","nombre":"NextRig", "rut": "88998899889912"}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "88998899889912"}'
     //actualizo solo la direccion, envio solo ese campo
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
     //el campo no se actualiza si se envia null
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
+    //envio credenciales incorrectas, espero un 403 Forbidden
+    //curl -v --user nextriguser:1432 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
     @POST
     @Path("/{idComercio}/modificacion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
     public Response modificacionComercio(
         @PathParam("idComercio") Integer idComercio,
         DTOModificacionComercio dataComercio) {
@@ -85,11 +88,12 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+    //curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
     @POST
     @Path("/{idComercio}/pos/alta")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
     public Response altaPos(
         @PathParam("idComercio") Integer idComercio, 
         DTOPos datosPos) {
@@ -112,11 +116,14 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+    //dejo la posibilidad de que un admin habilite o deshabilite un pos aparte del comercio que lo tiene
+    //curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
     @POST
     @Path("/{idComercio}/pos/{idPos}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"comercio", "admin"})
     public Response cambiarEstadoPos(
         @PathParam("idComercio") int idComercio, 
         @PathParam("idPos") int idPos, 
@@ -136,11 +143,12 @@ public class ComercioAPI {
         }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
     @POST
     @Path("/{idComercio}/password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
     public Response cambiarPassword(
         @PathParam("idComercio") Integer idComercio,
         DTOPassword dtoPw) {
@@ -159,11 +167,12 @@ public class ComercioAPI {
             }
     }
 
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
+    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
     @POST
     @Path("/{idComercio}/reclamo")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
     public Response realizarReclamo(
         DTOReclamo reclamo, 
         @PathParam("idComercio") Integer idComercio) {
@@ -181,12 +190,6 @@ public class ComercioAPI {
                 .status(500)
                 .build();
             }
-    }
-
-    //curl http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio
-    @GET
-    public boolean testAPI() {
-        return true;//simplemente para probar que este activa la api, se borra despues
     }
 
 }
