@@ -9,6 +9,7 @@ import org.tallerjava.moduloComercio.datatypes.DTOPos;
 import org.tallerjava.moduloComercio.datatypes.DTOReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
+import org.tallerjava.moduloComercio.infraestructura.interceptors.ApiInterceptor;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,11 +22,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -37,6 +41,9 @@ import jakarta.ws.rs.core.Response;
 @Path("/comercio")
 public class ComercioAPI {
  
+    @Context
+    private HttpServletRequest httpRequest;
+
     @Inject
     private ServicioComercio servicioComercio;
 
@@ -112,10 +119,12 @@ public class ComercioAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
+    @ApiInterceptor
     public Response modificacionComercio(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         DTOModificacionComercio dataComercio) {
-        
+
         boolean resultado = servicioComercio.modificarDatosComercio(
             idComercio, 
             dataComercio.getRut(), 
@@ -154,8 +163,10 @@ public class ComercioAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
+    @ApiInterceptor
     public Response altaPos(
-        @PathParam("idComercio") Integer idComercio, 
+        @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         DTOPos datosPos) {
 
         if (datosPos.getIdentificador() == null) {
@@ -204,8 +215,10 @@ public class ComercioAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"comercio", "admin"})
+    @ApiInterceptor
     public Response cambiarEstadoPos(
         @PathParam("idComercio") Integer idComercio, 
+        @Context SecurityContext securityContext,
         @PathParam("idPos") Integer idPos, 
         DTOEstadoPos estadoPos) {
         boolean resultado = servicioComercio.cambiarEstadoPos(idComercio, idPos, estadoPos.isEstado());
@@ -242,8 +255,10 @@ public class ComercioAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
+    @ApiInterceptor
     public Response cambiarPassword(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         DTOPassword dtoPw) {
 
             if (dtoPw.getPasswordNueva() == null) {
@@ -288,9 +303,11 @@ public class ComercioAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
+    @ApiInterceptor
     public Response realizarReclamo(
-        DTOReclamo reclamo, 
-        @PathParam("idComercio") Integer idComercio) {
+        @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
+        DTOReclamo reclamo) {
 
             if (reclamo.getContenidoReclamo() == null) {
                 return Response
