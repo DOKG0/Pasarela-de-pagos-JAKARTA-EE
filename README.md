@@ -27,7 +27,47 @@ Ejecutar el servidor e ingresar a http://localhost:8080/TallerJakartaEEPasarelaP
 
 ---
 
-### Modulo Comercio API
+### Documentacion proyecto
+
+#### 1. Arquitectura general
+
+EL sistema esta organizado en una arquitectura de monolito modular
+
+- ***Modulo comercio***: Gestiona el registro y mantenimiento de comercio, POS y reclamos.
+
+- ***Modulo compra***: Procesa las transacciones de pago, gestiona las tarjetas y genera resumenes de ventas
+
+- ***Modulo seguridad***: Maneja la autenticacion, autorizacion y gestion de usuarios y contraseñas
+
+- ***Servicios externos***: Simulan la interaccion con proveedores de procesamiento de pagos
+
+#### 2. Tecnologias utilizadas
+
+- Jakarta EE 10: Framework principal para el desarrollo de la aplicacion
+
+- Hibernate 6.1.5: ORM para el mapeo Objeto-relacional
+
+- Wildfly 27.0.1: Servidor de aplicaciones JavaEE
+
+- MariaDB: Sistema de gestion de bases de datos
+
+- JAX-RS: ApPI para servicios web REST
+
+- CDI: Inyeccion de dependencias
+
+- JPA: Persistencia de datos
+
+- Security API - Mecanismo de autenticacion y autorizacion
+
+- jUnit 5 y Mockito: Framework para testing
+
+- Lombok: Reduccion de codigo boilerplate
+
+- Swagger: Documentacion de APIs
+
+#### 3. API REST
+
+**Modulo Comercio API**
 
 1. Alta de Comercio
 
@@ -93,10 +133,9 @@ curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPag
 ```
 Permite a un comercio enviar un reclamo al sistema.
 
-
 ---
 
-### Modulo Compra API
+**Modulo Compra API**
 
 1. Procesar Nuevo Pago
 ```bash
@@ -121,5 +160,57 @@ Obtiene un resumen de todas las ventas aprobadas para el comercio especificado.
 curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
 ```
 Obtiene un resumen de todas las ventas rechazadas para el comercio especificado.
+
+---
+
+#### 4. Flujo principal de negocio
+
+***Proceso de alta de comercio***
+
+1. El Comercio envia sus datos a traves de la API
+2. El sistema valida los datos requeridos
+3. Se crea un usuario con rol "comercio" en el sistema de seguridad
+4. Se registra el comercio en el sistema
+5. Se emite un evento de comercio creado que se propaga a otros modulos
+
+***Flujo de procesamiento de pagos***
+
+1. Se reciben los datos de la tarjeta y el importe
+2. Se valida el formato de la fecha de vencimiento
+3. Se crea un objeto de Tarjeta con los datos proporcionados
+4. Se solicita al servicio externo el procesamiento del pago
+5. Segun el resultado, se marca la compra como **aprobada** o **rechazada**
+6. Se actualiza el registro de ventas del comercio
+7. Se devuelve el resultado al cliente
+
+***Generacion de resumenes de ventas***
+
+1. Se recibe la solicitud con el ID del comercio y parametros de filtrado
+2. Se recupera el comercio desde el repositorio
+3. Se filtran las compras segun los criterios **periodos** o **estado**
+4. Se calcula el importe total y la cantidad de ventas
+5. Se devuelve el DTO con el resumen completo
+
+#### 5. Test y validacion
+
+***Ejecucion de Tests unitarios***
+
+Para ejecutar todos los test unitarios utilizar `mvn test`
+
+Para ejecutar test especificos utilizar por ejemplo `mvn test -Dtest=CompraApiTest`
+
+#### 6. Seguridad
+
+***Roles de usuario***
+
+- ***comercio***: Acceso a operaciones especificas del comercio
+- ***admin***: Acceso completo a todas las operaciones
+- ***servicioExterno***: Acceso limitado para integraciones externas
+
+***Mecanismos de autenticacion***
+
+- `Basic Authentication` para todas las APIs protegidas
+- `Hashing` de contraseñas utilizando algoritmos seguros
+- `Validacion de permisos` basada en roles con anotaciones **@RolesAllowed**
 
 ---
