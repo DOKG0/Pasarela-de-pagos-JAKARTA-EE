@@ -17,3 +17,8 @@ También se inicializa con 1 administrador con el rol admin, cuyas credenciales 
 En caso de ya existir tablas creadas, pueden interferir con la creación de las tablas actualizadas del mismo nombre. En ese caso hay que eliminarlas.
 2. Si ocurre un error al crear las tablas, verificar que la propiedad de nombre `jakarta.persistence.schema-generation.database.action` del archivo `persistence.xml` en el directorio `/src/main/webapp/WEB-INF/classes/META-INF` no esté comentada.
 Esta propiedad indica que las tablas son eliminadas y creadas desde cero al inicializar el contexto de persistencia, por lo que todos los datos guardados serán eliminados. Realizar un respaldo de los datos previo a la ejecución del servidor si se quiere conservar los datos.
+
+
+### Documentación de las APIs con Swagger
+
+Ejecutar el servidor e ingresar a http://localhost:8080/TallerJakartaEEPasarelaPagos/dist/
