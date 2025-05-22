@@ -120,6 +120,25 @@
 			<groupId>org.eclipse</groupId>
 			<artifactId>yasson</artifactId>
 			<version>2.0.2</version>
+			
+		<!-- test -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>3.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>3.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>3.1.2</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -148,7 +167,6 @@
 					<version>${wildfly.version}</version>
 					<server-config>standalone-full.xml</server-config>
 					<add-user>
-
 						<users>
 							<user>
 								<username>root</username>
@@ -157,6 +175,11 @@
 							</user>
 						</users>
 					</add-user>
+
+					<commands>
+						<command>/subsystem=undertow/application-security-domain=other:write-attribute(name=integrated-jaspi,value=false)</command>   
+                        <command>reload</command>                 
+                    </commands>
 
 					<scripts>
 						<!-- ver archivo config.cli que está en ./ -->
