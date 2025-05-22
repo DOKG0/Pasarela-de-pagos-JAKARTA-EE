@@ -1,4 +1,4 @@
-package org.tallerjava.moduloSeguridad.infraestructura.interceptors;
+package org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -27,7 +27,7 @@ public class ServicioComercioImpl implements ServicioComercio {
 
         Integer idComercio = repositorio.guardarComercio(comercio);
 
-        if (idComercio != -1 && servicioSeguridad.altaUsuarioComercio(comercio.getUsuario(), password, idComercio)) { 
+        if (idComercio != -1 && servicioSeguridad.altaComercio(comercio.getUsuario(), password)) { 
             //solo si se creo correctamente el comercio y su usuario
             Comercio nuevoComercio = repositorio.buscarPorId(idComercio);
             CuentaBancoComercio nuevaCuentaBanco = nuevoComercio.getCuentaBancoComercio();

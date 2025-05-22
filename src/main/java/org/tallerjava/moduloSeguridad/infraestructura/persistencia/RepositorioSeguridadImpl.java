@@ -1,6 +1,5 @@
 package org.tallerjava.moduloSeguridad.infraestructura.persistencia;
 
-import org.tallerjava.moduloSeguridad.dominio.Comercio;
 import org.tallerjava.moduloSeguridad.dominio.Grupo;
 import org.tallerjava.moduloSeguridad.dominio.Usuario;
 
@@ -59,37 +58,4 @@ public class RepositorioSeguridadImpl implements RepositorioSeguridad {
             return false;
         }
     }
-
-    @Override
-    public Comercio buscarComercio(Integer idComercio) {
-        return em.find(Comercio.class, idComercio);
-    }
-
-    @Override
-    public boolean guardarUsuarioComercio(String nombreUsuario, String passwordHash, Grupo grupo, Integer idComercio) {
-        try {
-            if (buscarUsuario(nombreUsuario) == null && buscarComercio(idComercio) == null) {
-                Usuario usuario = new Usuario(nombreUsuario, passwordHash, grupo);
-                em.persist(usuario);
-                em.flush();
-
-                Comercio comercio = new Comercio(idComercio, usuario);
-                em.persist(comercio);
-                em.flush();
-
-                return true;
-            } else {
-                System.err.println("Ya existe un usuario con el nombre " 
-                    + nombreUsuario 
-                    + " o un comercio con el id " 
-                    + idComercio);
-                return false;
-            }
-        } catch (Exception e) {
-           System.err.println("Error al crear el usuario " + nombreUsuario);
-           System.err.println(e.getMessage());
-           return false;
-        }
-    }
-
 }

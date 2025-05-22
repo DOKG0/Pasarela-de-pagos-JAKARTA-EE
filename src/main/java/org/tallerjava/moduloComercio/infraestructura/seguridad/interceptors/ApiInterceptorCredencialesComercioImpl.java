@@ -1,7 +1,7 @@
-package org.tallerjava.moduloSeguridad.infraestructura.interceptors;
+package org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors;
 
-import org.tallerjava.moduloSeguridad.dominio.Comercio;
-import org.tallerjava.moduloSeguridad.infraestructura.persistencia.RepositorioSeguridad;
+import org.tallerjava.moduloComercio.dominio.Comercio;
+import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -17,7 +17,7 @@ import jakarta.ws.rs.core.SecurityContext;
 public class ApiInterceptorCredencialesComercioImpl {
     
     @Inject
-    RepositorioSeguridad repositorioSeguridad;
+    RepositorioComercio repositorioComercio;
 
     @AroundInvoke
     public Object validarCredencialesComercio(InvocationContext invocationContext) {
@@ -27,7 +27,7 @@ public class ApiInterceptorCredencialesComercioImpl {
             SecurityContext securityContext = (SecurityContext) invocationContext.getParameters()[1];
             String nombreUsuario = securityContext.getUserPrincipal().getName();
 
-            Comercio comercio = repositorioSeguridad.buscarComercio(idComercio);
+            Comercio comercio = repositorioComercio.buscarPorId(idComercio);
             
             if (comercio == null) {
                 return Response
@@ -37,7 +37,7 @@ public class ApiInterceptorCredencialesComercioImpl {
                 .build();
             }
 
-            if (!comercio.getUsuario().getUsuario().equals(nombreUsuario)) {
+            if (!comercio.getUsuario().equals(nombreUsuario)) {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"El comercio no pertenece al usuario\"}")
@@ -46,7 +46,7 @@ public class ApiInterceptorCredencialesComercioImpl {
             }
 
             return invocationContext.proceed();
-                        
+
         } catch (Exception e) {
             System.err.println("Falla en el interceptor de validación de credenciales del comercio.");
             System.err.println(e.getMessage());
