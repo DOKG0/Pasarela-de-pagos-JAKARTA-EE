@@ -19,9 +19,9 @@ public class ServicioComercioImpl implements ServicioComercio {
     @Inject
     private PublicadorEvento publicador;
 
+    
     @Override
     public Integer altaComercio(Comercio comercio) {
-
         Integer idComercio = repositorio.guardarComercio(comercio);
 
         if (idComercio != -1) { //solo si se creo correctamente el comercio

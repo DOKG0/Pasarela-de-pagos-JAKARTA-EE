@@ -26,6 +26,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/compra")
 public class CompraAPI {
     
+    
     @Inject
     ServicioCompra servicioCompra;
 

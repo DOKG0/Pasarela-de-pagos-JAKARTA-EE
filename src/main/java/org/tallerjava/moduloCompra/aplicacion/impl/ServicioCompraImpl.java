@@ -39,7 +39,8 @@ public class ServicioCompraImpl implements ServicioCompra{
         boolean resultado = servicioExterno.procesarPago(
             comercio.getCuentaBanco().getNumeroCuenta(), 
             importe, 
-            datosTarjeta);
+            datosTarjeta,
+            idComercio);
 
         if (resultado) {
             nuevaCompra.setEstado(EstadoCompra.APROBADA);
