@@ -54,7 +54,7 @@ public class TransferenciaAPI {
         }
     }
 
-    // curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2023-01-01&fechaFinal=2023-12-31"
+    // curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
     @GET
     @Path("/depositos")
     @Consumes(MediaType.APPLICATION_JSON)

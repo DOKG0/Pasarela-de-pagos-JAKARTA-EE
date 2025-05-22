@@ -19,10 +19,13 @@ public class ServicioComercioImpl implements ServicioComercio {
     private RepositorioComercio repositorio;
     @Inject
     private PublicadorEvento publicador;
+    @Inject
+    private ServicioSeguridad servicioSeguridad;
 
     @Override
     public Integer altaComercio(Comercio comercio, String password) {
 
+        
         boolean registroExitoso = servicioSeguridad.altaComercio(comercio.getUsuario(), password);
         if (!registroExitoso) {
             return -1; //salida temprana si no se creo correctamente el usuario
@@ -119,6 +122,12 @@ public class ServicioComercioImpl implements ServicioComercio {
                 .getReclamos()
                 .get(comercioPostActualizacion.getReclamos().size()-1);
             Integer idNuevoReclamo = ultimoReclamo.getId();
+
+            publicador.publicarEventoReclamoComercio(
+                idComercio, 
+                reclamo.getId()
+                );
+                
             return idNuevoReclamo;
         } else {
             return -1;

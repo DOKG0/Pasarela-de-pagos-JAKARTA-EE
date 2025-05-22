@@ -33,6 +33,7 @@ public class Comercio {
     private String nombre;
     private String rut;
     private String direccion;
+    private String contraseña;
 
     @OneToMany(
         mappedBy = "comercio",

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.management.RuntimeErrorException;
 
+import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloComercio.interfase.local.ServicioComercioFacade;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
@@ -27,6 +28,9 @@ public class ServicioCompraImpl implements ServicioCompra{
     private ServicioComercioFacade serviceComercio;
 
     @Inject
+    private PublicadorEvento publicador;
+
+    @Inject
     private ServicioExternoMedioDePago servicioExterno;
 
     @Override
@@ -34,7 +38,10 @@ public class ServicioCompraImpl implements ServicioCompra{
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
 
+        
         Compra nuevaCompra = new Compra(importe);
+        repositorio.actualizarComercio(comercio);
+        publicador.publicarEventoPago(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado()); // envial null como id, hay que arreglar
         
         boolean resultado = servicioExterno.procesarPago(
             comercio.getCuentaBanco().getNumeroCuenta(), 
@@ -47,6 +54,7 @@ public class ServicioCompraImpl implements ServicioCompra{
             comercio.setImporteVentasDelDia(comercio.getImporteVentasDelDia() + importe);
         } else {
             nuevaCompra.setEstado(EstadoCompra.RECHAZADA);
+            publicador.publicarEventoPagoError(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
         }
 
         comercio.agregarCompra(nuevaCompra);
