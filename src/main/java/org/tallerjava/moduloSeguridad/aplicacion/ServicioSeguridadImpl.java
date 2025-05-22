@@ -14,7 +14,7 @@ public class ServicioSeguridadImpl implements ServicioSeguridad {
     RepositorioSeguridad repositorio;
 
     @Override
-    public boolean altaComercio(String nombreUsuario, String password) {
+    public boolean altaUsuario(String nombreUsuario, String password) {
         
         Grupo grupoComercio = repositorio.buscarGrupo("comercio");
         if (grupoComercio == null) {
@@ -32,4 +32,17 @@ public class ServicioSeguridadImpl implements ServicioSeguridad {
 
         return repositorio.cambiarPassword(nombreUsuario, nuevaPasswordHash);
     }
+
+    @Override
+    public boolean altaUsuarioComercio(String nombreUsuario, String password, Integer idComercio) {
+        Grupo grupoComercio = repositorio.buscarGrupo("comercio");
+        if (grupoComercio == null) {
+            return false;
+        }
+
+        String passwordHash = HashFunctionUtil.convertToHash(password);
+
+        return repositorio.guardarUsuarioComercio(nombreUsuario, passwordHash, grupoComercio, idComercio);
+    }
+
 }

@@ -9,7 +9,7 @@ import org.tallerjava.moduloComercio.datatypes.DTOPos;
 import org.tallerjava.moduloComercio.datatypes.DTOReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
-import org.tallerjava.moduloComercio.infraestructura.interceptors.ApiInterceptor;
+import org.tallerjava.moduloSeguridad.infraestructura.interceptors.ApiInterceptorCredencialesComercio;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,9 +59,7 @@ public class ComercioAPI {
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOComercio.class)))
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "112233"}'
-    //sin un campo requerido, espero 400 Bad Request
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "nroCuentaBanco": "112233"}'
+    //Logica
     @POST
     @Path("/alta")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -101,25 +99,19 @@ public class ComercioAPI {
     @ApiResponses(value={
         @ApiResponse(responseCode = "200", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "500", description = "Fallo en el servidor. Causas: El id del comercio provisionado no se encontró en el sistema.")})
+        @ApiResponse(responseCode = "404", description = "El comercio con el id provisionado no existe"),
+        @ApiResponse(responseCode = "500", description = "Fallo en la modificación del comercio")})
     @RequestBody(
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOModificacionComercio.class)))
-    //actualizo solo el rut pero mano los demas campos igual
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "88998899889912"}'
-    //actualizo solo la direccion, envio solo ese campo
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
-    //el campo no se actualiza si se envia null
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
-    //envio credenciales incorrectas, espero un 403 Forbidden
-    //curl -v --user nextriguser:1432 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
+    //Logica
     @POST
     @Path("/{idComercio}/modificacion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
-    @ApiInterceptor
+    @ApiInterceptorCredencialesComercio
     public Response modificacionComercio(
         @PathParam("idComercio") Integer idComercio,
         @Context SecurityContext securityContext,
@@ -152,18 +144,19 @@ public class ComercioAPI {
         @ApiResponse(responseCode = "200", description = "Operación de alta exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "500", description = "Fallo en el servidor. Causas: El id del comercio provisionado no se encontró en el sistema.")})
+        @ApiResponse(responseCode = "404", description = "No se encontró el comercio con el id provisionado"),
+        @ApiResponse(responseCode = "500", description = "Fallo en el servidor")})
     @RequestBody(
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOPos.class)))
-    //curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+    //Logica
     @POST
     @Path("/{idComercio}/pos/alta")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
-    @ApiInterceptor
+    @ApiInterceptorCredencialesComercio
     public Response altaPos(
         @PathParam("idComercio") Integer idComercio,
         @Context SecurityContext securityContext,
@@ -202,20 +195,19 @@ public class ComercioAPI {
     @ApiResponses(value={
         @ApiResponse(responseCode = "204", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "500", description = "Fallo en el servidor. Causas: El id del comercio provisionado o identificador del pos no se encontraron en el sistema.")})
+        @ApiResponse(responseCode = "404", description = "No se encontró un comercio con el id provisionado"),
+        @ApiResponse(responseCode = "500", description = "Fallo en el servidor o el pos no se encontró en el sistema")})
     @RequestBody(
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOEstadoPos.class)))
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
-    //dejo la posibilidad de que un admin habilite o deshabilite un pos aparte del comercio que lo tiene
-    //curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+    //Logica
     @POST
     @Path("/{idComercio}/pos/{idPos}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"comercio", "admin"})
-    @ApiInterceptor
+    @RolesAllowed({"comercio"})
+    @ApiInterceptorCredencialesComercio
     public Response cambiarEstadoPos(
         @PathParam("idComercio") Integer idComercio, 
         @Context SecurityContext securityContext,
@@ -244,18 +236,19 @@ public class ComercioAPI {
         @ApiResponse(responseCode = "204", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "500", description = "Fallo en el servidor. Causas: El id del comercio provisionado no se encontró en el sistema.")})
+        @ApiResponse(responseCode = "404", description = "No se encontró un comercio con el id provisionado"),
+        @ApiResponse(responseCode = "500", description = "Fallo en el servidor")})
     @RequestBody(
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOPassword.class)))
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
+    //Logica
     @POST
     @Path("/{idComercio}/password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
-    @ApiInterceptor
+    @ApiInterceptorCredencialesComercio
     public Response cambiarPassword(
         @PathParam("idComercio") Integer idComercio,
         @Context SecurityContext securityContext,
@@ -292,18 +285,19 @@ public class ComercioAPI {
         @ApiResponse(responseCode = "204", description = "Operación de alta exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "500", description = "Fallo en el servidor. Causas: El id del comercio provisionado no se encontró en el sistema.")})
+        @ApiResponse(responseCode = "404", description = "No se encontró un comercio con el id provisionado"),
+        @ApiResponse(responseCode = "500", description = "Fallo en el servidor")})
     @RequestBody(
         description = "Estructura del request",
         required = true,
         content = @Content(schema = @Schema(implementation = DTOReclamo.class)))
-    //curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
+    //Logica
     @POST
     @Path("/{idComercio}/reclamo")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("comercio")
-    @ApiInterceptor
+    @ApiInterceptorCredencialesComercio
     public Response realizarReclamo(
         @PathParam("idComercio") Integer idComercio,
         @Context SecurityContext securityContext,

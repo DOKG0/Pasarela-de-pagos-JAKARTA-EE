@@ -54,4 +54,19 @@ public class ComercioRepositorioImpl implements RepositorioComercio {
             throw new RuntimeException("Error al buscar comercio por ID", e);
         }
     }
+
+    @Override
+    public boolean eliminarComercio(Integer idComercio) {
+        Comercio comercio = buscarPorId(idComercio);
+        if (comercio == null) return false;
+
+        try {
+            em.remove(comercio);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error al eliminar el comercio " + comercio.getId());
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
 }

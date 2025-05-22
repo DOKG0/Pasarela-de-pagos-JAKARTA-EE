@@ -1,4 +1,4 @@
-package org.tallerjava.moduloComercio.infraestructura.interceptors;
+package org.tallerjava.moduloSeguridad.infraestructura.interceptors;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,6 +10,6 @@ import jakarta.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApiInterceptor {
+public @interface ApiInterceptorCredencialesComercio {
     
 }
