@@ -23,7 +23,6 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.SecurityContext;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -40,9 +39,6 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Path("/comercio")
 public class ComercioAPI {
- 
-    @Context
-    private HttpServletRequest httpRequest;
 
     @Inject
     private ServicioComercio servicioComercio;
