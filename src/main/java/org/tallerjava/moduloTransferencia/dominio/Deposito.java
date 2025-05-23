@@ -13,8 +13,6 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +34,6 @@ public class Deposito {
     private BigDecimal montoNeto;
 
     private String fecha;
-
     private Integer referenciaTransferencia;
     
     public Deposito(Integer comercioId, BigDecimal monto, Integer referencia) {

@@ -28,26 +28,10 @@ public class CuentaBancoComercio {
     private Integer id;
     private String numeroCuenta;
     private String banco;
-    private String tipoCuenta; // CORRIENTE o AHORRO
-    private String moneda; // USD o UYU supongo
-    private BigDecimal saldo = BigDecimal.ZERO;
-
-    @OneToMany(
-        orphanRemoval = true, 
-        fetch = FetchType.EAGER,
-        cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_cuenta_banco_comercio")
-    private List<Movimiento> movimientos = new ArrayList<Movimiento>();
 
     // Métodos de negocio
     public boolean esCuentaValida() {
         return numeroCuenta != null && !numeroCuenta.isEmpty() &&
                banco != null && !banco.isEmpty();
-    }
-
-    public void acreditar (BigDecimal monto) {
-        if (monto != null && monto.compareTo(BigDecimal.ZERO) > 0) {
-            this.saldo = this.saldo.add(monto);
-        }
     }
 }

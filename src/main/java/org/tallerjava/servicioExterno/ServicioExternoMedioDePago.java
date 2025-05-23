@@ -10,10 +10,6 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioExternoMedioDePago {
     
-    //Momentaneo
-    
-    Integer idTransaccion;
-    
     @Inject
     private ServicioTransferenciaFacade serviceTransferencia;
 
@@ -21,19 +17,10 @@ public class ServicioExternoMedioDePago {
     private ServicioRepositorio servicioRepositorio;
     
 
-    public boolean procesarPago(String nroCuentaBancoComercio, double importe, Tarjeta datosTarjeta, Integer idComercio) {
+    public boolean procesarPago(String nroCuentaBancoComercio, double importe, Integer idComercio) {
 
         boolean resultado = ( (int) (Math.random() * 11) < 7);
-
-        if (resultado){ 
-            if (servicioRepositorio.traerIdTransferencia() == null) {
-                idTransaccion = 1;
-            } else {
-                idTransaccion = servicioRepositorio.traerIdTransferencia() + 1;
-            }
-            serviceTransferencia.recibirNotificacionTransferenciaDesdeMedioPago(nroCuentaBancoComercio, importe, idTransaccion.toString(), idComercio);
-            this.idTransaccion++;
-        }
+        
         return resultado;
     }
 }

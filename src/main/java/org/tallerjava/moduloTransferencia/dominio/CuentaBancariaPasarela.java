@@ -29,6 +29,7 @@ public class CuentaBancariaPasarela {
                       .subtract(repositorio.sumaTotalNetoDeposito());
         this.transferencias = repositorio.traerTransferencias();
         this.depositos = repositorio.traerDepositos();
+        System.out.println("Saldo inicial de la cuenta pasarela: " + this.saldo);
     }
 
 
@@ -59,12 +60,14 @@ public class CuentaBancariaPasarela {
         repositorio.guardarTransferencia(transferencia);
     }
 
-    public void registrarDepositoAComercio(Deposito deposito) {
+    public void registrarDepositoAComercio(Deposito deposito, Integer idComercio) {
         BigDecimal montoNeto = deposito.getMonto().subtract(deposito.getComision());
         this.retirar(montoNeto);
         this.depositos.add(deposito);
         
-        repositorio.guardarDeposito(deposito);
-
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        comercio.getDepositos().add(deposito);
+        
+        repositorio.actualizarComercio(comercio);
     }
 }

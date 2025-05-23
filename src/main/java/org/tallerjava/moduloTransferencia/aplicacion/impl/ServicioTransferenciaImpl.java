@@ -58,11 +58,11 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
             montoBigDecimal
         );
 
-        //Se crea la el deposito y se registra en la pasarela de pagos, a su vez se guarda en el banco del mismo
+        //Se crea la el deposito y se registra en la pasarela de pagos, a su vez se guarda en la lista de depositos del comercio
         Deposito deposito = new Deposito(idComercio, montoBigDecimal, transferencia.getId());
-        cuentaPasarela.registrarDepositoAComercio(deposito);
+        cuentaPasarela.registrarDepositoAComercio(deposito, idComercio);
         
-        //Se envia el deposito al modulo Comercio para depositar el dinero en la cuenta del comercio
+        //Se envia al Modulo Monitoreo
         publicadorEvento.publicarDepositoFinalizado(
             deposito.getId(),
             idComercio,
@@ -70,7 +70,7 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
             deposito.getComision()
         );
         
-        //Se envia el evento al modulo Monitores
+        //Se envia el evento al modulo Monitoreo
         publicadorEvento.publicarPagoProcesado(
             codigoTransaccion,
             idComercio,

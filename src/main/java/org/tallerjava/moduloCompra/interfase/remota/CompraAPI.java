@@ -8,6 +8,7 @@ import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
+import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,36 +32,53 @@ public class CompraAPI {
     @Inject
     ServicioCompra servicioCompra;
 
+    @Inject
+    ClienteHttpCompra httpClient;
+    //Antes
     //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroTarjeta": "123", "marcaTarjeta": "visa", "fechaVtoTarjeta": "2025-05-17", "importe": 10000 }'
+   
+    //Nuevo
+    //
+   
     @POST
     @Path("/{idComercio}/nueva-compra")
     @Produces(MediaType.APPLICATION_JSON)
     public Response procesarPago(
-        @PathParam("idComercio") Integer idComercio, 
-        DTOPago datosCompra) {
+        //@PathParam("idComercio") Integer idComercio, 
+        //DTOPago datosCompra) {
+        DTOTransferencia datosCompra) {  
             
-            LocalDate fechaVtoTarjeta = null;
-            try {
-                fechaVtoTarjeta = LocalDate.parse(datosCompra.getFechaVtoTarjeta());
-            } catch (Exception e) {
-                return Response
-                .serverError()
-                .entity("{\"error\": \"Fecha de vencimiento de tarjeta invalida\"}")
-                .status(500)
-                .build();
-            }
+            // LocalDate fechaVtoTarjeta = null;
+            // try {
+            //     fechaVtoTarjeta = LocalDate.parse(datosCompra.getFechaVtoTarjeta());
+            // } catch (Exception e) {
+            //     return Response
+            //     .serverError()
+            //     .entity("{\"error\": \"Fecha de vencimiento de tarjeta invalida\"}")
+            //     .status(500)
+            //     .build();
+            // }
 
-            Tarjeta tarjeta = new Tarjeta(
-                datosCompra.getNroTarjeta(),
-                datosCompra.getMarcaTarjeta(),
-                fechaVtoTarjeta
+            // Tarjeta tarjeta = new Tarjeta(
+            //     datosCompra.getNroTarjeta(),
+            //     datosCompra.getMarcaTarjeta(),
+            //     fechaVtoTarjeta
+            // );
+
+            // boolean resultado = httpClient.enviarSolicitudPago(
+            //     datosCompra.tarjeta,
+            //     datosCompra.getImporte(),
+            //     idComercio
+            // );
+
+            // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
+            boolean resultado = httpClient.enviarSolicitudPago(
+                datosCompra
             );
 
-            boolean resultado = servicioCompra.procesarPago(
-                idComercio, 
-                datosCompra.getImporte(), 
-                tarjeta);
-
+            //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
+            servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado);
+            
             if (resultado) {
                 return Response
                 .ok()

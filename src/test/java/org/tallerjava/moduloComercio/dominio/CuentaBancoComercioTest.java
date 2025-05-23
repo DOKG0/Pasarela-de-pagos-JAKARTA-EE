@@ -12,12 +12,11 @@ import org.tallerjava.moduloComercio.dominio.CuentaBancoComercio;
 public class CuentaBancoComercioTest {
     
     @Test
-    void deberiaCrearCuentaConSaldoCero() {
+    void deberiaCrearCuenta() {
         CuentaBancoComercio cuenta = new CuentaBancoComercio();
         cuenta.setNumeroCuenta("123456");
         cuenta.setBanco("BROU");
         
-        assertEquals(BigDecimal.ZERO, cuenta.getSaldo());
     }
 
     @Test

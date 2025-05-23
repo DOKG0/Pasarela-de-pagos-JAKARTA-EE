@@ -34,20 +34,14 @@ public class ServicioCompraImpl implements ServicioCompra{
     private ServicioExternoMedioDePago servicioExterno;
 
     @Override
-    public boolean procesarPago(Integer idComercio, double importe, Tarjeta datosTarjeta) {
+    public boolean procesarPago(Integer idComercio, double importe, boolean resultado) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
-
         
         Compra nuevaCompra = new Compra(importe);
         repositorio.actualizarComercio(comercio);
         publicador.publicarEventoPago(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado()); // envial null como id, hay que arreglar
-        
-        boolean resultado = servicioExterno.procesarPago(
-            comercio.getCuentaBanco().getNumeroCuenta(), 
-            importe, 
-            datosTarjeta,
-            idComercio);
+    
 
         if (resultado) {
             nuevaCompra.setEstado(EstadoCompra.APROBADA);

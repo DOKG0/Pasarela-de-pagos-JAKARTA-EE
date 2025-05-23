@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.tallerjava.moduloComercio.dominio.Comercio;
+import org.tallerjava.moduloTransferencia.dominio.Comercio;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
 import org.tallerjava.moduloTransferencia.dominio.Transferencia;
 import org.tallerjava.moduloTransferencia.dominio.repo.TransferenciaRepositorio;
@@ -56,11 +56,54 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
         }
     }
 
+    @Override
+    public Integer guardarComercio(Comercio comercio) {
+        try {
+            if (comercio.getId() == null) {
+                em.persist(comercio);
+                em.flush(); 
+                return comercio.getId();
+            } else {
+                Comercio merged = em.merge(comercio);
+                return merged.getId();
+            }
+        } catch (Exception e) {
+            // throw new RuntimeException("Error al guardar comercio", e);
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean actualizarComercio(Comercio comercio) {
+        try {
+            Comercio comercioExistente = buscarPorId(comercio.getId());
+            if (comercioExistente != null) {
+                em.merge(comercio);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            // throw new RuntimeException("Error al actualizar comercio", e);
+            return false;
+        }
+    }
+
+
+    @Override
+    public Comercio buscarPorId(Integer id) {
+        try {
+            return em.find(Comercio.class, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar comercio por ID", e);
+        }
+    }
 
     @Override
     public List<Deposito> buscarDepositosPorComercioYFecha(Integer idComercio, LocalDate fechaInicio,
         LocalDate fechaFin) {
-        List<Deposito> depositos = traerDepositos();
+        Comercio comercio = buscarPorId(idComercio);
+        
+        List<Deposito> depositos = comercio.getDepositos();
         List<Deposito> depositosFiltrados = new ArrayList<>();
 
         for (Deposito d : depositos) { 
@@ -74,7 +117,6 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
                 depositosFiltrados.add(d);
             }
         }
-
         return depositosFiltrados;
     }
 
