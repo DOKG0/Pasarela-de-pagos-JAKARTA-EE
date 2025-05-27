@@ -6,6 +6,7 @@ public class DTOTransferencia {
     private String nroCuentaBancoComercio;
     private Integer idComercio;
     private double monto;
+    private DTOPago dtoPago;
 
     public DTOTransferencia buildDTONotificacionTransferencia() {
         DTOTransferencia notificacion = new DTOTransferencia();

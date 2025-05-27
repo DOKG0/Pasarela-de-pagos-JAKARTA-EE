@@ -33,7 +33,6 @@ public class Comercio {
     private String nombre;
     private String rut;
     private String direccion;
-    private String contraseña;
 
     @OneToMany(
         mappedBy = "comercio",
@@ -56,11 +55,11 @@ public class Comercio {
     private CuentaBancoComercio cuentaBancoComercio;
 
 
-    public Comercio(String rut, String nombre, String direccion, String contraseña) {
+    public Comercio(String rut, String nombre, String direccion) {
         this.nombre = nombre;
         this.rut = rut;
         this.direccion = direccion;
-        this.contraseña = contraseña;
+
     }
 
     public void agregarPos(Pos pos) {

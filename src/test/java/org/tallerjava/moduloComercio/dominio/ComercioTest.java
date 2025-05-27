@@ -14,21 +14,13 @@ public class ComercioTest {
 
     @Test
     void testCreacionComercioValido() {
-        Comercio comercio = new Comercio("RUT123", "Mi Tienda", "Dirección 123", "123");
+        Comercio comercio = new Comercio("RUT123", "Mi Tienda", "Dirección 123");
         assertNotNull(comercio);
         assertEquals("RUT123", comercio.getRut());
         assertEquals("Mi Tienda", comercio.getNombre());
         assertTrue(comercio.getPoses().isEmpty());
     }
 
-    @Test
-    void testCambioContraseñaValido() {
-        Comercio comercio = new Comercio("RUT123", "Mi Tienda", "Dirección 123", "123");
-        String nuevaPass = "NuevaPass123!";
-        comercio.setContraseña(nuevaPass);
-
-        assertEquals(nuevaPass, comercio.getContraseña());
-    }
 
     @Test
     void testAgregarPosCorrectamente() {
