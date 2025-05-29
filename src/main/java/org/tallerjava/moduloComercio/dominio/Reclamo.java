@@ -25,8 +25,11 @@ public class Reclamo {
     private EstadoReclamo estado;
 
     public Reclamo(String texto) {
-            this.texto = texto;
-            this.fecha = LocalDateTime.now();
-            this.estado = EstadoReclamo.PENDIENTE;
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("El texto del reclamo no puede estar vacío");
+        }
+        this.texto = texto;
+        this.fecha = LocalDateTime.now();
+        this.estado = EstadoReclamo.PENDIENTE;
         }
 }
