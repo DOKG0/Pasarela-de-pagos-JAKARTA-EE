@@ -9,6 +9,7 @@ import org.tallerjava.moduloComercio.datatypes.DTOPos;
 import org.tallerjava.moduloComercio.datatypes.DTOReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
+import org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesAdminComercio;
 import org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesComercio;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -202,8 +203,8 @@ public class ComercioAPI {
     @Path("/{idComercio}/pos/{idPos}/estado")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"comercio"})
-    @ApiInterceptorCredencialesComercio
+    @RolesAllowed({"comercio", "admin"})
+    @ApiInterceptorCredencialesAdminComercio
     public Response cambiarEstadoPos(
         @PathParam("idComercio") Integer idComercio, 
         @Context SecurityContext securityContext,
