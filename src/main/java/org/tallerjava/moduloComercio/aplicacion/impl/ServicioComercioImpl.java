@@ -25,14 +25,11 @@ public class ServicioComercioImpl implements ServicioComercio {
     @Override
     public Integer altaComercio(Comercio comercio, String password) {
 
-        
-        boolean registroExitoso = servicioSeguridad.altaComercio(comercio.getUsuario(), password);
-        if (!registroExitoso) {
-            return -1; //salida temprana si no se creo correctamente el usuario
-        }
         Integer idComercio = repositorio.guardarComercio(comercio);
 
-        if (idComercio != -1) { //solo si se creo correctamente el comercio
+        //solo si se creo correctamente el comercio y su usuario
+        if (idComercio != -1 && servicioSeguridad.altaComercio(comercio.getUsuario(), password)) { 
+
             Comercio nuevoComercio = repositorio.buscarPorId(idComercio);
             CuentaBancoComercio nuevaCuentaBanco = nuevoComercio.getCuentaBancoComercio();
 
@@ -41,6 +38,8 @@ public class ServicioComercioImpl implements ServicioComercio {
                 nuevaCuentaBanco.getNumeroCuenta(),
                 nuevaCuentaBanco.getId()
                 );
+        } else {
+            repositorio.eliminarComercio(idComercio);
         }
        
         return idComercio;
