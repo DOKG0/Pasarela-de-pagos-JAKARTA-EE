@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.SecurityContext;
 
 @Interceptor
 @Priority(1)
-@ApiInterceptorCredencialesComercio
+@ApiInterceptorCredencialesAdminComercio
 public class ApiInterceptorCredencialesAdminComercioImpl {
 
     @Inject
@@ -28,7 +28,6 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
             SecurityContext securityContext = (SecurityContext) invocationContext.getParameters()[1];
             String nombreUsuario = securityContext.getUserPrincipal().getName();
             boolean usuarioEsAdmin = securityContext.isUserInRole("admin");
-
             Comercio comercio = repositorioComercio.buscarPorId(idComercio);
                 
             if (comercio == null) {
