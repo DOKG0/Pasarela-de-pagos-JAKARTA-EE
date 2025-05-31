@@ -22,14 +22,12 @@ public class ServicioSeguridadImpl implements ServicioSeguridad {
         }
 
         String passwordHash = HashFunctionUtil.convertToHash(password);
-
         return repositorio.guardarUsuario(nombreUsuario, passwordHash, grupoComercio);
     }
 
     @Override
     public boolean cambiarPassword(String nombreUsuario, String password) {
         String nuevaPasswordHash = HashFunctionUtil.convertToHash(password);
-
         return repositorio.cambiarPassword(nombreUsuario, nuevaPasswordHash);
     }
 

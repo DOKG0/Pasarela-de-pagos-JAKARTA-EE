@@ -19,16 +19,20 @@ public class ServicioComercioImpl implements ServicioComercio {
     private RepositorioComercio repositorio;
     @Inject
     private PublicadorEvento publicador;
-    @Inject 
-    ServicioSeguridad servicioSeguridad;
+    @Inject
+    private ServicioSeguridad servicioSeguridad;
 
     @Override
     public Integer altaComercio(Comercio comercio, String password) {
 
+        
+        boolean registroExitoso = servicioSeguridad.altaComercio(comercio.getUsuario(), password);
+        if (!registroExitoso) {
+            return -1; //salida temprana si no se creo correctamente el usuario
+        }
         Integer idComercio = repositorio.guardarComercio(comercio);
 
-        if (idComercio != -1 && servicioSeguridad.altaComercio(comercio.getUsuario(), password)) { 
-            //solo si se creo correctamente el comercio y su usuario
+        if (idComercio != -1) { //solo si se creo correctamente el comercio
             Comercio nuevoComercio = repositorio.buscarPorId(idComercio);
             CuentaBancoComercio nuevaCuentaBanco = nuevoComercio.getCuentaBancoComercio();
 
@@ -37,8 +41,6 @@ public class ServicioComercioImpl implements ServicioComercio {
                 nuevaCuentaBanco.getNumeroCuenta(),
                 nuevaCuentaBanco.getId()
                 );
-        } else {
-            repositorio.eliminarComercio(idComercio);
         }
        
         return idComercio;
@@ -120,6 +122,12 @@ public class ServicioComercioImpl implements ServicioComercio {
                 .getReclamos()
                 .get(comercioPostActualizacion.getReclamos().size()-1);
             Integer idNuevoReclamo = ultimoReclamo.getId();
+
+            publicador.publicarEventoReclamoComercio(
+                idComercio, 
+                reclamo.getId()
+                );
+                
             return idNuevoReclamo;
         } else {
             return -1;
