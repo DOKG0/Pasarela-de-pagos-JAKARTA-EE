@@ -1,6 +1,5 @@
 package org.tallerjava.moduloSeguridad.infraestructura.persistencia;
 
-import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloSeguridad.dominio.Grupo;
 import org.tallerjava.moduloSeguridad.dominio.Usuario;
 
