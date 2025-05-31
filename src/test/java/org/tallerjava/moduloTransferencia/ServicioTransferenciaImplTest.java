@@ -16,7 +16,6 @@ public class ServicioTransferenciaImplTest {
 
         boolean resultado = servicio.notificarBancoConHttp(numeroCuenta, monto, codigoTransaccion);
 
-        // assertTrue(resultado, "La notificacion al banco via HTTP deberia devolver true si responde 'ok'");
-        assertTrue(true);
+        assertTrue(resultado, "La notificacion al banco via HTTP deberia devolver true si responde 'ok'");
     }
 }
