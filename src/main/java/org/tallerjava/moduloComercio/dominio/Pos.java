@@ -23,4 +23,12 @@ public class Pos {
     private boolean habilitado = true; //cuando se crea el Pos se inicializa como habilitado -> sujeto a cambios
     @ManyToOne
     private Comercio comercio;
+
+
+    public boolean isHabilitado() {
+        if (habilitado) {
+            return true;
+        }
+        return false;
+    }
 }

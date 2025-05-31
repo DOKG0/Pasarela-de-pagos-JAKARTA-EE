@@ -54,6 +54,14 @@ public class Comercio {
         cascade = CascadeType.ALL)
     private CuentaBancoComercio cuentaBancoComercio;
 
+
+    public Comercio(String rut, String nombre, String direccion) {
+        this.nombre = nombre;
+        this.rut = rut;
+        this.direccion = direccion;
+
+    }
+
     public void agregarPos(Pos pos) {
         this.poses.add(pos);
     }

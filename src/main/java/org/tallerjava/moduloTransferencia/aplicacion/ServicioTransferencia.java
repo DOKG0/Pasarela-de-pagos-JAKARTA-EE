@@ -6,10 +6,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ServicioTransferencia {
-    void recibirNotificacionTransferenciaDesdeMedioPago(
-        Integer idComercio, 
+    boolean recibirNotificacionTransferenciaDesdeMedioPago(
+        String nroCuentaBancoComercio, 
         double monto, 
-        String codigoTransaccion
+        String codigoTransaccion,
+        Integer idComercio
     );
-    List<Deposito> consultarDepositos(Comercio comercio, LocalDate fechaInicio, LocalDate fechaFin);
+    List<Deposito> consultarDepositos(Integer idComercio, LocalDate fechaInicio, LocalDate fechaFin);
+
 }
