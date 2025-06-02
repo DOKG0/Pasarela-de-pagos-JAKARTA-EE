@@ -1,4 +1,4 @@
-package org.tallerjava.moduloTransferencia;
+package org.tallerjava.moduloTransferencia.integration;
 
 import static org.junit.jupiter.api.Assertions.*;
 

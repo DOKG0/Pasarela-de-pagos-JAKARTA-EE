@@ -65,6 +65,8 @@
 
 ### 204 No Content
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+// permito que un admin modifique el estado aparte del comercio que es dueño
+>	curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "true"}'
 
 ### 403 Forbidden
 // envio credenciales invalidas
