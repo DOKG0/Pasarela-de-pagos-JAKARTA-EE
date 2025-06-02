@@ -1,0 +1,15 @@
+## NUEVA COMPRA
+
+>   curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+
+## RESUMEN DE VENTAS
+
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+
+## RESUMEN DE VENTAS POR ESTADO
+
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=PENDIENTE"

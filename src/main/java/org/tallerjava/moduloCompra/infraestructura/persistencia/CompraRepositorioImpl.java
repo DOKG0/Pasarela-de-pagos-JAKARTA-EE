@@ -1,14 +1,11 @@
 package org.tallerjava.moduloCompra.infraestructura.persistencia;
 
 import org.tallerjava.moduloCompra.dominio.CuentaBancoComercio;
-import org.tallerjava.moduloComercio.interfase.evento.out.EventoComercio;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -42,13 +39,13 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     }
 
     @Override
-    public Integer guardarComercio(@Observes EventoComercio eventoComercio) {
+    public Integer guardarComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco) {
         Comercio comercio = new Comercio();
-        comercio.setId(eventoComercio.getIdComercio());
+        comercio.setId(idComercio);
 
         CuentaBancoComercio cuentaBancoComercio = new CuentaBancoComercio();
-        cuentaBancoComercio.setId(eventoComercio.getIdCuentaBanco());
-        cuentaBancoComercio.setNumeroCuenta(eventoComercio.getNroCuentaBancoComercio());
+        cuentaBancoComercio.setId(idCuentaBanco);
+        cuentaBancoComercio.setNumeroCuenta(nroCuentaBancoComercio);
 
         comercio.setCuentaBanco(cuentaBancoComercio);;
 

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
-import org.tallerjava.moduloCompra.dominio.Tarjeta;
-import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
 
@@ -34,67 +32,38 @@ public class CompraAPI {
 
     @Inject
     ClienteHttpCompra httpClient;
-    //Antes
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroTarjeta": "123", "marcaTarjeta": "visa", "fechaVtoTarjeta": "2025-05-17", "importe": 10000 }'
    
-    //Nuevo
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"0011223344","idComercio":1,"monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
-
-
-   
+    
     @POST
-    @Path("/{idComercio}/nueva-compra")
+    @Path("/nueva-compra")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response procesarPago(
-        //@PathParam("idComercio") Integer idComercio, 
-        //DTOPago datosCompra) {
-        DTOTransferencia datosCompra) {  
-            
-            // LocalDate fechaVtoTarjeta = null;
-            // try {
-            //     fechaVtoTarjeta = LocalDate.parse(datosCompra.getFechaVtoTarjeta());
-            // } catch (Exception e) {
-            //     return Response
-            //     .serverError()
-            //     .entity("{\"error\": \"Fecha de vencimiento de tarjeta invalida\"}")
-            //     .status(500)
-            //     .build();
-            // }
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response procesarPago(DTOTransferencia datosCompra) {   
+        // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
+        boolean resultado = httpClient.enviarSolicitudPago(
+            datosCompra
+        );
 
-            // Tarjeta tarjeta = new Tarjeta(
-            //     datosCompra.getNroTarjeta(),
-            //     datosCompra.getMarcaTarjeta(),
-            //     fechaVtoTarjeta
-            // );
-
-            // boolean resultado = httpClient.enviarSolicitudPago(
-            //     datosCompra.tarjeta,
-            //     datosCompra.getImporte(),
-            //     idComercio
-            // );
-
-            // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
-            boolean resultado = httpClient.enviarSolicitudPago(
-                datosCompra
-            );
-
-            //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
-            servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado);
-            
-            if (resultado) {
-                return Response
+        //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
+        servicioCompra.procesarPago(
+            datosCompra.getIdComercio(), 
+            datosCompra.getMonto(), 
+            resultado, 
+            datosCompra.getIdPos());
+        
+        if (resultado) {
+            return Response
                 .ok()
                 .build();
-            } else {
-                return Response
+        } else {
+            return Response
                 .serverError()
                 .entity("{\"error\": \"El pago fue rechazado\"}")
                 .status(500)
                 .build();
-            }
+        }
     }
 
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-05-18"
     @GET
     @Path("/{idComercio}/resumen/periodo")
     @Produces(MediaType.APPLICATION_JSON)
@@ -137,8 +106,6 @@ public class CompraAPI {
             }
     }
 
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
     @GET
     @Path("/{idComercio}/resumen/por-estado")
     @Produces(MediaType.APPLICATION_JSON)

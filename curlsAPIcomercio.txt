@@ -1,7 +1,6 @@
 ## ALTA COMERCIO
 
 ### 200 OK
->	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "112233"}'
 >	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 222", "usuario": "otrocomercio" ,"nombre":"otro comercio", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "223344"}'
 
 
@@ -44,7 +43,8 @@
 ## ALTA POS
 
 ### 200 OK
->	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+>	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos3"}'
+>	curl -v  --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/3/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
 ### 400 Bad Request
 // falta de datos requeridos
@@ -60,6 +60,9 @@
 // envio un id de comercio inexistente
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/999/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
+### 500 Internal Server Error
+// identificador de pos repetido
+>   curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
 ## MODIFICACION DE ESTADO DE POS
 

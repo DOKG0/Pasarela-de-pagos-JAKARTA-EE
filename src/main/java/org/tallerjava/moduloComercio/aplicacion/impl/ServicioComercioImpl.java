@@ -69,6 +69,9 @@ public class ServicioComercioImpl implements ServicioComercio {
 
         if (comercio == null) return -1;
 
+        Pos posPreexistente = comercio.buscarPosPorIdentificador(pos.getIdentificador());
+        if (posPreexistente != null) return -1; //un pos con el mismo nombre ya existe para ese comercio
+
         comercio.agregarPos(pos);
         pos.setComercio(comercio);
         boolean resultado = repositorio.actualizarComercio(comercio);
@@ -76,7 +79,16 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (resultado) {
             Comercio comercioActualizado = repositorio.buscarPorId(idComercio);
             Pos nuevoPos = comercioActualizado.buscarPosPorIdentificador(pos.getIdentificador());
-            return nuevoPos.getId();
+            Integer idPos = nuevoPos.getId();
+
+            publicador.publicarEventoAltaPos(
+                idPos, 
+                nuevoPos.getIdentificador(), 
+                nuevoPos.isHabilitado(), 
+                comercioActualizado.getId()
+            );
+
+            return idPos;
         } else {
             return -1;
         }
@@ -93,7 +105,14 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (pos == null) return false;
 
         pos.setHabilitado(estado);
-        return repositorio.actualizarComercio(comercio);
+        boolean actualizacionExitosa = repositorio.actualizarComercio(comercio);
+        if (actualizacionExitosa) {
+            publicador.publicarEventoModificacionPos(
+                identificadorPos, estado, idComercio
+            );
+        }
+
+        return actualizacionExitosa;
     }
 
     @Override

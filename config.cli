@@ -21,7 +21,7 @@ connect
     end-try
     #3ero finalmente se crea datasource
     try
-        data-source add --name=tallerjavadb --jndi-name=java:jboss/MariaDB --driver-name=mariadb --connection-url=jdbc:mariadb://localhost:3306/tallerJakartaEE --user-name=root --password=1234
+        data-source add --name=tallerjavadb --jndi-name=java:jboss/MariaDB --driver-name=mariadb --connection-url=jdbc:mariadb://localhost:3306/tallerJakartaEE --user-name=matp25 --password=Nekorion.1
         echo "Se crea nuevo datasource"
     catch
         echo "No se crea datasource, ya existe"
