@@ -8,6 +8,7 @@ import org.tallerjava.moduloCompra.dominio.datatypes.DTOCompra;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -27,6 +28,8 @@ import lombok.NoArgsConstructor;
 public class Comercio {
     @Id
     private Integer id;
+    @Column(unique = true)
+    private String usuario;
     private double importeVentasDelDia; //to do: implementar un schedule que lo resetee a 0 todos los dias
 
     @OneToMany(

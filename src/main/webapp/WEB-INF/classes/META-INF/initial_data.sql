@@ -11,7 +11,7 @@ insert into cuenta_banco_comercio_MOD_COMERCIO values (1, null, "112233");
 insert into cuenta_banco_comercio_MOD_COMPRA values (1, "112233");
 
 insert into comercio_MOD_COMERCIO values (1, "18 de Julio 111", "NextRig", "123451234512345", "nextriguser", 1);
-insert into comercio_MOD_COMPRA values (1, 0, 1);
+insert into comercio_MOD_COMPRA values (1, 0,"nextriguser",1);
 insert into comercio_MOD_TRANSFERENCIA values (1);
 
 insert into pos_MOD_COMERCIO values (1, 1, "pos1",1), (2, 0, "pos2", 1);

@@ -39,9 +39,15 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     }
 
     @Override
-    public Integer guardarComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco) {
+    public Integer guardarComercio(
+        Integer idComercio, 
+        String nroCuentaBancoComercio, 
+        Integer idCuentaBanco, 
+        String usuarioComercio) {
+
         Comercio comercio = new Comercio();
         comercio.setId(idComercio);
+        comercio.setUsuario(usuarioComercio);
 
         CuentaBancoComercio cuentaBancoComercio = new CuentaBancoComercio();
         cuentaBancoComercio.setId(idCuentaBanco);

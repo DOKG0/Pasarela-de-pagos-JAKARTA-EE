@@ -7,8 +7,10 @@ import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
+import org.tallerjava.moduloCompra.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesComercio;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -18,31 +20,34 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Tag(name="API del Módulo Compra")
 @ApplicationScoped
 @Path("/compra")
 public class CompraAPI {
     
-    
     @Inject
     ServicioCompra servicioCompra;
 
     @Inject
     ClienteHttpCompra httpClient;
-   
     
     @POST
-    @Path("/nueva-compra")
+    @Path("/{idComercio}/nueva-compra")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response procesarPago(DTOTransferencia datosCompra) {   
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
+    public Response procesarPago(
+        @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
+        DTOTransferencia datosCompra) {   
         // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
-        boolean resultado = httpClient.enviarSolicitudPago(
-            datosCompra
-        );
+        boolean resultado = httpClient.enviarSolicitudPago(datosCompra);
 
         //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
         servicioCompra.procesarPago(
@@ -67,8 +72,11 @@ public class CompraAPI {
     @GET
     @Path("/{idComercio}/resumen/periodo")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
     public Response obtenerResumenDeVentasPorPeriodo(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         @QueryParam("fechaInicio") String fechaInicioStr,
         @QueryParam("fechaFin") String fechaFinStr) {
             /*
@@ -86,10 +94,10 @@ public class CompraAPI {
             } finally {
                 if (fechaInicio == null || fechaFin == null) {
                     return Response
-                    .serverError()
-                    .entity("{\"error\": \"Error al procesar los parametros\"}")
-                    .status(500)
-                    .build();
+                        .serverError()
+                        .entity("{\"error\": \"Error al procesar los parametros\"}")
+                        .status(500)
+                        .build();
                 }
             }
 
@@ -97,10 +105,10 @@ public class CompraAPI {
 
             if (resumen == null) {
                 return Response
-                .serverError()
-                .entity("{\"error\": \"Error al generar el resumen\"}")
-                .status(500)
-                .build();
+                    .serverError()
+                    .entity("{\"error\": \"Error al generar el resumen\"}")
+                    .status(500)
+                    .build();
             } else {
                 return Response.ok(resumen).build();
             }
@@ -109,17 +117,20 @@ public class CompraAPI {
     @GET
     @Path("/{idComercio}/resumen/por-estado")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
     public Response obtenerResumenDeVentasDiario(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         @QueryParam("estado") EstadoCompra estado) {
 
         DTOResumenVentas resumen = servicioCompra.resumenVentasPorEstado(idComercio, estado);
         if (resumen == null) {
             return Response
-            .serverError()
-            .entity("{\"error\": \"Error al generar el resumen\"}")
-            .status(500)
-            .build();
+                .serverError()
+                .entity("{\"error\": \"Error al generar el resumen\"}")
+                .status(500)
+                .build();
         } else {
             return Response.ok(resumen).build();
         }
