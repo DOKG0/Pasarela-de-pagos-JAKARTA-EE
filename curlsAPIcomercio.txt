@@ -44,7 +44,7 @@
 
 ### 200 OK
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos3"}'
->	curl -v  --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/3/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+>	curl -v  --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
 ### 400 Bad Request
 // falta de datos requeridos

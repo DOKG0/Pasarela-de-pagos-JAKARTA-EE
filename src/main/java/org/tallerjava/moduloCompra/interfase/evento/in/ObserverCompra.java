@@ -20,7 +20,8 @@ public class ObserverCompra {
         Integer resultado = repositorioCompra.guardarComercio(
             evento.getIdComercio(), 
             evento.getNroCuentaBancoComercio(),
-            evento.getIdCuentaBanco());
+            evento.getIdCuentaBanco(),
+            evento.getUsuarioComercio());
         
         if (resultado == -1) {
             System.err.println("Error en el alta de comercio en el MÓDULO COMPRA");

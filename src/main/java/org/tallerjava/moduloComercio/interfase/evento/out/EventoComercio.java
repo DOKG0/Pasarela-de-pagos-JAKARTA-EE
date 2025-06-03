@@ -11,4 +11,5 @@ public class EventoComercio {
     private Integer idComercio;
     private String nroCuentaBancoComercio;
     private Integer idCuentaBanco;
+    private String usuarioComercio;
 }

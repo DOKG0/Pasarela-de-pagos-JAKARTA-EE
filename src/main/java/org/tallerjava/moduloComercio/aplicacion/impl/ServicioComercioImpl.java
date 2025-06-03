@@ -36,7 +36,8 @@ public class ServicioComercioImpl implements ServicioComercio {
             publicador.publicarEventoComercio(
                 idComercio, 
                 nuevaCuentaBanco.getNumeroCuenta(),
-                nuevaCuentaBanco.getId()
+                nuevaCuentaBanco.getId(),
+                nuevoComercio.getUsuario()
                 );
         } else {
             repositorio.eliminarComercio(idComercio);

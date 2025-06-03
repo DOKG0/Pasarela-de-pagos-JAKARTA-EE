@@ -6,7 +6,7 @@ import org.tallerjava.moduloCompra.dominio.Compra;
 public interface CompraRepositorio {
     Integer guardarCompra(Compra compra);
     double obtenerMontoVentasDiaActual(Integer idComercio);
-    Integer guardarComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco);
+    Integer guardarComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco, String usuarioComercio);
     boolean actualizarComercio(Comercio comercio);
     Comercio buscarPorId(Integer id);
 }

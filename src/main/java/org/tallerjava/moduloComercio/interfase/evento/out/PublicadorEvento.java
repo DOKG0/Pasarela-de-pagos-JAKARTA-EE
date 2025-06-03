@@ -19,8 +19,13 @@ public class PublicadorEvento {
     @Inject 
     private Event<EventoModificacionPos> eventoModificacionPos;
 
-    public void publicarEventoComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco) {
-        EventoComercio evento = new EventoComercio(idComercio, nroCuentaBancoComercio, idCuentaBanco);
+    public void publicarEventoComercio(
+        Integer idComercio, 
+        String nroCuentaBancoComercio, 
+        Integer idCuentaBanco, 
+        String usuarioComercio) {
+
+        EventoComercio evento = new EventoComercio(idComercio, nroCuentaBancoComercio, idCuentaBanco, usuarioComercio);
         eventoComercio.fire(evento);
     }
 
