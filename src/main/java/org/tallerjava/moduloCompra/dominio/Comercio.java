@@ -30,6 +30,13 @@ public class Comercio {
     private double importeVentasDelDia; //to do: implementar un schedule que lo resetee a 0 todos los dias
 
     @OneToMany(
+        mappedBy = "comercio",
+        orphanRemoval = true, 
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL)
+    private List<Pos> poses = new ArrayList<Pos>();
+
+    @OneToMany(
         orphanRemoval = true, 
         fetch = FetchType.EAGER,
         cascade = CascadeType.ALL)
@@ -91,5 +98,27 @@ public class Comercio {
         resumen.setVentas(compras);
 
         return resumen;
+    }
+
+    public Pos buscarPosPorId(Integer id) {
+        for (Pos pos : this.poses) {
+            if (pos.getId().equals(id)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    public Pos buscarPosPorIdentificador(String identificadorPos) {
+        for (Pos pos : this.poses) {
+            if (pos.getIdentificador().equals(identificadorPos)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    public void agregarPos(Pos pos) {
+        this.poses.add(pos);
     }
 }

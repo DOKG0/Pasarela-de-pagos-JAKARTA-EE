@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public interface ServicioCompra {
 
-    public boolean procesarPago(Integer idComercio, double importe, boolean resultado);
+    public boolean procesarPago(Integer idComercio, double importe, boolean resultado, Integer idPos);
     public DTOResumenVentas resumenVentasPorPeriodo(Integer idComercio, LocalDateTime fechaInicio, LocalDateTime fechaFin);
     public DTOResumenVentas resumenVentasPorEstado(Integer idComercio, EstadoCompra estado);
     public double montoActualVendido(Integer idComercio);

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Entity(name="pos_MOD_COMERCIO")
 @Table(name="pos_MOD_COMERCIO")
 public class Pos {
     @Id

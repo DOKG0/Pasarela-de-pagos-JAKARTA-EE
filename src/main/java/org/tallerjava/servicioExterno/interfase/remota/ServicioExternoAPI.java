@@ -24,16 +24,30 @@ public class ServicioExternoAPI {
     @POST
     @Path("/notificar-transferencia")
     public Response notificarTransferencia(DTONotificacionTransferencia dto) {
-        boolean resultado = servicioExterno.procesarPago(dto.getNroCuentaBancoComercio(), dto.getMonto(), dto.getIdComercio());
+        
+        boolean resultado = servicioExterno.procesarPago(
+            dto.getNroCuentaBancoComercio(), 
+            dto.getMonto(), 
+            dto.getIdComercio()
+        );
+        
         if(resultado ) { 
             boolean exito = clienteHttpTransferencia.enviarNotificacion(dto);
 
             if (exito) {
-                return Response.ok("Notificación enviada correctamente al módulo Transferencia").build();
+                return Response
+                    .ok("Notificación enviada correctamente al módulo Transferencia")
+                    .build();
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Fallo al enviar notificación").build();
+                return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Fallo al enviar notificación")
+                    .build();
             }
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity("Fallo al procesar pago").build();
+        return Response
+            .status(Response.Status.BAD_REQUEST)
+            .entity("Fallo al procesar pago")
+            .build();
     }
 }

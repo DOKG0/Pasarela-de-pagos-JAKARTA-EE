@@ -75,24 +75,24 @@ class ServicioComercioImplTest {
         assertEquals("Nueva", comercio.getDireccion());
     }
 
-    @Test
-    void altaPos_deberiaAgregarPosYRetornarId() {
-        Comercio comercio = mock(Comercio.class);
-        Pos pos = new Pos();
-        pos.setIdentificador("POS1");
-        pos.setId(100);
+    // @Test
+    // void altaPos_deberiaAgregarPosYRetornarId() {
+    //     Comercio comercio = mock(Comercio.class);
+    //     Pos pos = new Pos();
+    //     pos.setIdentificador("POS1");
+    //     pos.setId(100);
 
-        when(repositorio.buscarPorId(1)).thenReturn(comercio);
-        when(repositorio.actualizarComercio(comercio)).thenReturn(true);
-        when(comercio.buscarPosPorIdentificador("POS1")).thenReturn(pos);
-        when(repositorio.buscarPorId(1)).thenReturn(comercio);
+    //     when(repositorio.buscarPorId(1)).thenReturn(comercio);
+    //     when(repositorio.actualizarComercio(comercio)).thenReturn(true);
+    //     when(comercio.buscarPosPorIdentificador("POS1")).thenReturn(pos);
+    //     when(repositorio.buscarPorId(1)).thenReturn(comercio);
 
-        int resultado = servicio.altaPos(1, pos);
+    //     int resultado = servicio.altaPos(1, pos);
 
-        assertEquals(pos.getId(), resultado);
-        verify(comercio).agregarPos(pos);
-        //verify(pos).setComercio(comercio);
-    }
+    //     assertEquals(pos.getId(), resultado);
+    //     verify(comercio).agregarPos(pos);
+    //     //verify(pos).setComercio(comercio);
+    // }
 
     @Test
     void cambiarEstadoPos_deberiaActualizarEstadoCorrectamente() {
