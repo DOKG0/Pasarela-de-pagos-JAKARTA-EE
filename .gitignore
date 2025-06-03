@@ -1,4 +1,4 @@
 target/
 .mvn/wrapper/maven-wrapper.jar
-config.cli
+/config.cli
 06-jakartaProyectoReferencia
