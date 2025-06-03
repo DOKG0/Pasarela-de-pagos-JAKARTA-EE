@@ -19,6 +19,8 @@ import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoDepositoFin
 import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoPagoProcesado;
 import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoTransferenciaRecibida;
 import org.tallerjava.moduloTransferencia.interfase.evento.out.PublicadorEvento;
+import org.tallerjava.servicioExterno.interfase.remota.ClienteHttpTransferencia;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.net.HttpURLConnection;
@@ -37,6 +39,10 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
 
     @Inject
     CuentaBancariaPasarela cuentaPasarela;
+
+    @Inject
+    private ClienteHttpTransferencia clienteHttpTransferencia;
+
     
     public boolean recibirNotificacionTransferenciaDesdeMedioPago(
         String nroCuentaBancoComercio, 
@@ -64,6 +70,7 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         //Se crea la el deposito y se registra en la pasarela de pagos, a su vez se guarda en la lista de depositos del comercio
         Deposito deposito = new Deposito(idComercio, montoBigDecimal, transferencia.getId());
         cuentaPasarela.registrarDepositoAComercio(deposito, idComercio);
+        clienteHttpTransferencia.notificarBancoSoapHttp(nroCuentaBancoComercio, monto, codigoTransaccion);
         
         //Se envia al Modulo Monitoreo
         publicadorEvento.publicarDepositoFinalizado(
@@ -89,46 +96,5 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         return depositos;
     }
 
-    public boolean notificarBancoConHttp(String numeroCuenta, double monto, String codigoTransaccion) {
-        try {
-            String soapEndpointUrl = "http://localhost:8080/TallerJakartaEEPasarelaPagos/NotificacionBancoService";
-            String soapAction = "";
-
-            String soapBody =
-                "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://soap.ws.interfase.moduloComercio.tallerjava.org/\">" +
-                "   <soapenv:Header/>" +
-                "   <soapenv:Body>" +
-                "      <ws:notificarSaldoEntrante>" +
-                "         <numeroCuenta>" + numeroCuenta + "</numeroCuenta>" +
-                "         <monto>" + monto + "</monto>" +
-                "         <codigoTransaccion>" + codigoTransaccion + "</codigoTransaccion>" +
-                "      </ws:notificarSaldoEntrante>" +
-                "   </soapenv:Body>" +
-                "</soapenv:Envelope>";
-
-            URL url = new URL(soapEndpointUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-            conn.setRequestProperty("SOAPAction", soapAction);
-            conn.setDoOutput(true);
-
-            try (OutputStream os = conn.getOutputStream()) {
-                os.write(soapBody.getBytes());
-            }
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                // Leer la respuesta y buscar "ok"
-                try (InputStream is = conn.getInputStream()) {
-                    String response = new String(is.readAllBytes());
-                    return response.contains(">ok<");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    
 }

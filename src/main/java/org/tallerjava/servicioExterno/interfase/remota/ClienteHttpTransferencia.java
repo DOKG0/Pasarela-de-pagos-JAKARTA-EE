@@ -19,9 +19,9 @@ public class ClienteHttpTransferencia {
         try {
             Client client = ClientBuilder.newClient();
             Response response = client
-                .target(ENDPOINT_TRANSFERENCIA)
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
+                    .target(ENDPOINT_TRANSFERENCIA)
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
 
             return response.getStatus() == 200;
         } catch (Exception e) {
@@ -34,11 +34,41 @@ public class ClienteHttpTransferencia {
         try {
             Client client = ClientBuilder.newClient();
             Response response = client
-                .target(ENDPOINT_COMPRA)
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
+                    .target(ENDPOINT_COMPRA)
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
 
             return response.getStatus() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean notificarBancoSoapHttp(String numeroCuenta, double monto, String codigoTransaccion) {
+        try {
+            String soapEndpointUrl = "http://localhost:8080/TallerJakartaEEPasarelaPagos/NotificacionBancoService";
+            String soapBody = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://soap.ws.interfase.moduloComercio.tallerjava.org/\">"
+                    +
+                    "   <soapenv:Header/>" +
+                    "   <soapenv:Body>" +
+                    "      <ws:notificarSaldoEntrante>" +
+                    "         <numeroCuenta>" + numeroCuenta + "</numeroCuenta>" +
+                    "         <monto>" + monto + "</monto>" +
+                    "         <codigoTransaccion>" + codigoTransaccion + "</codigoTransaccion>" +
+                    "      </ws:notificarSaldoEntrante>" +
+                    "   </soapenv:Body>" +
+                    "</soapenv:Envelope>";
+
+            Client client = ClientBuilder.newClient();
+            Response response = client
+                    .target(soapEndpointUrl)
+                    .request(MediaType.TEXT_XML)
+                    .post(Entity.entity(soapBody, MediaType.TEXT_XML));
+
+            String responseStr = response.readEntity(String.class);
+            return response.getStatus() == 200 && responseStr.contains(">ok<");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
