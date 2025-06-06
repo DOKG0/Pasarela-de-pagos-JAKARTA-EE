@@ -1,5 +1,8 @@
 package org.tallerjava.servicioExterno.interfase.remota;
 
+import java.util.logging.Logger;
+
+import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.servicioExterno.ServicioExternoMedioDePago;
 import org.tallerjava.servicioExterno.datatypes.DTONotificacionTransferencia;
 
@@ -14,7 +17,7 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Path("/servicio-externo")
 public class ServicioExternoAPI {
-    
+    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     ClienteHttpTransferencia clienteHttpTransferencia; // Cliente REST
 
@@ -25,15 +28,13 @@ public class ServicioExternoAPI {
     @Path("/notificar-transferencia")
     public Response notificarTransferencia(DTONotificacionTransferencia dto) {
         boolean resultado = servicioExterno.procesarPago(dto.getNroCuentaBancoComercio(), dto.getMonto(), dto.getIdComercio());
-        if(resultado ) { 
-            boolean exito = clienteHttpTransferencia.enviarNotificacion(dto);
+        LOG.info("[ServicioExterno] Resultado booleano del servicioExterno: " + resultado);
 
-            if (exito) {
-                return Response.ok("Notificación enviada correctamente al módulo Transferencia").build();
+        if(resultado ) { 
+                //clienteHttpTransferencia.enviarNotificacion(dto);
+                return Response.ok(resultado).build();
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Fallo al enviar notificación").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("Fallo al procesar pago").build();
             }
-        }
-        return Response.status(Response.Status.BAD_REQUEST).entity("Fallo al procesar pago").build();
     }
 }

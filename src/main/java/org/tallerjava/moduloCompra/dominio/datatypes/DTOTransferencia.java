@@ -8,13 +8,4 @@ public class DTOTransferencia {
     private double monto;
     private DTOPago dtoPago;
 
-    public DTOTransferencia buildDTONotificacionTransferencia() {
-        DTOTransferencia notificacion = new DTOTransferencia();
-        
-        notificacion.setNroCuentaBancoComercio(this.nroCuentaBancoComercio);
-        notificacion.setIdComercio(this.idComercio);
-        notificacion.setMonto(this.monto);
-        
-        return notificacion;
-    }
 }

@@ -1,21 +1,14 @@
 package org.tallerjava.servicioExterno.datatypes;
 
+import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
+
 import lombok.Data;
 @Data
 public class DTONotificacionTransferencia {
     private String nroCuentaBancoComercio;
     private Integer idComercio;
     private double monto;
+    private DTOPago dtoPago;
     private String codigoTransaccion;
 
-    public DTONotificacionTransferencia buildDTONotificacionTransferencia() {
-        DTONotificacionTransferencia notificacion = new DTONotificacionTransferencia();
-        
-        notificacion.setNroCuentaBancoComercio(this.nroCuentaBancoComercio);
-        notificacion.setIdComercio(this.idComercio);
-        notificacion.setMonto(this.monto);
-        notificacion.setCodigoTransaccion(this.codigoTransaccion);
-        
-        return notificacion;
-    }
 }

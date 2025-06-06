@@ -1,10 +1,12 @@
 package org.tallerjava.moduloCompra.aplicacion.impl;
 
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 import javax.management.RuntimeErrorException;
 
 import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
+import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloComercio.interfase.local.ServicioComercioFacade;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
@@ -21,6 +23,7 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioCompraImpl implements ServicioCompra{
     
+    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     private CompraRepositorio repositorio;
     
@@ -38,21 +41,33 @@ public class ServicioCompraImpl implements ServicioCompra{
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
         
-        Compra nuevaCompra = new Compra(importe);
+        Compra nuevaCompra = new Compra(importe);    
+        comercio.agregarCompra(nuevaCompra);
         repositorio.actualizarComercio(comercio);
-        publicador.publicarEventoPago(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado()); // envial null como id, hay que arreglar
-    
+        
+        if (comercio.getCompras().contains(nuevaCompra)) {
+            LOG.info("[ServicioCompra] Compra registrada en comercio");
+        } else {
+            LOG.warning("[ServicioCompra] Error al registrar la compra en el comercio");
+            throw new RuntimeErrorException(null, "Error al registrar la compra en el comercio");
+        }
 
         if (resultado) {
             nuevaCompra.setEstado(EstadoCompra.APROBADA);
             comercio.setImporteVentasDelDia(comercio.getImporteVentasDelDia() + importe);
+            LOG.info("[ServicioCompra] Compra Aprobada");
         } else {
             nuevaCompra.setEstado(EstadoCompra.RECHAZADA);
-            publicador.publicarEventoPagoError(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
+            LOG.info("[ServicioCompra] Compra Rechazada");
         }
 
-        comercio.agregarCompra(nuevaCompra);
         repositorio.actualizarComercio(comercio);
+
+        publicador.publicarEventoPago(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
+
+        if(!resultado){
+            publicador.publicarEventoPagoError(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
+        }
 
         return resultado;
     }

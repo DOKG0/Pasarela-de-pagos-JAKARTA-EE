@@ -24,7 +24,11 @@ public class ClienteHttpCompra {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
 
-            return response.getStatus() == 200;
+            if (response.getStatus() == 200) {
+                return response.readEntity(Boolean.class); 
+            }
+
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

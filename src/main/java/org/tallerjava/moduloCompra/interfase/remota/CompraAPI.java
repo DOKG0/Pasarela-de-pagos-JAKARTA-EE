@@ -2,6 +2,7 @@ package org.tallerjava.moduloCompra.interfase.remota;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
@@ -9,6 +10,7 @@ import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
+import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,7 +30,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/compra")
 public class CompraAPI {
     
-    
+    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     ServicioCompra servicioCompra;
 
@@ -50,33 +52,13 @@ public class CompraAPI {
         //DTOPago datosCompra) {
         DTOTransferencia datosCompra) {  
             
-            // LocalDate fechaVtoTarjeta = null;
-            // try {
-            //     fechaVtoTarjeta = LocalDate.parse(datosCompra.getFechaVtoTarjeta());
-            // } catch (Exception e) {
-            //     return Response
-            //     .serverError()
-            //     .entity("{\"error\": \"Fecha de vencimiento de tarjeta invalida\"}")
-            //     .status(500)
-            //     .build();
-            // }
-
-            // Tarjeta tarjeta = new Tarjeta(
-            //     datosCompra.getNroTarjeta(),
-            //     datosCompra.getMarcaTarjeta(),
-            //     fechaVtoTarjeta
-            // );
-
-            // boolean resultado = httpClient.enviarSolicitudPago(
-            //     datosCompra.tarjeta,
-            //     datosCompra.getImporte(),
-            //     idComercio
-            // );
-
+       
             // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
             boolean resultado = httpClient.enviarSolicitudPago(
                 datosCompra
             );
+
+            LOG.info("[Compra] Resultado booleano del Servicio Externo: " + resultado);
 
             //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
             servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado);
