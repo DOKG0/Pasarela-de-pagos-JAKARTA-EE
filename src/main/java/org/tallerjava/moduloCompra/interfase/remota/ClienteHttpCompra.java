@@ -23,16 +23,11 @@ public class ClienteHttpCompra {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
 
-            /**
-             * DTONotificacionTransferencia en el servicio externo es diferente a DTOTransferencia de este modulo
-             * Esto genera un error en el lado del servicio externo al parsear el objeto, 
-             * por lo que siempre devuelve un codigo 400
-             */
-            System.out.println("Response - ClienteHttpCompra: ");
-            System.out.println(response.readEntity(String.class));
-            System.out.println("Response status: " + response.getStatus());
+            if (response.getStatus() == 200) {
+                return response.readEntity(Boolean.class); 
+            }
 
-            return response.getStatus() == 200;
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

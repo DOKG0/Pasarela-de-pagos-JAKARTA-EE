@@ -5,11 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOCompra;
+import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloTransferencia.aplicacion.ServicioTransferencia;
 import org.tallerjava.moduloTransferencia.dominio.CuentaBancariaPasarela;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
@@ -31,6 +33,7 @@ import java.io.InputStream;
 @ApplicationScoped
 public class ServicioTransferenciaImpl implements ServicioTransferencia{
 
+    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     private TransferenciaRepositorio repositorio;
 
@@ -60,6 +63,13 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         Transferencia transferencia = new Transferencia(codigoTransaccion, montoBigDecimal, nroCuentaBancoComercio, idComercio);
         cuentaPasarela.registrarTransferenciaEntrante(transferencia);
         
+        if(cuentaPasarela.getTransferencias().contains(transferencia)){
+            LOG.info("[ServicioTransferencia] Transferencia registrada en pasarela de pagos");
+        } else {
+            LOG.warning("[ServicioTransferencia] Error al registrar la transferencia en la pasarela de pagos");
+            return false; //Si no se pudo registrar la transferencia, se retorna false
+        }
+
         //Se envia el evento al modulo Monitores
         publicadorEvento.publicarTransferenciaRecibida(
             codigoTransaccion,
@@ -71,6 +81,13 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         Deposito deposito = new Deposito(idComercio, montoBigDecimal, transferencia.getId());
         cuentaPasarela.registrarDepositoAComercio(deposito, idComercio);
         clienteHttpTransferencia.notificarBancoSoapHttp(nroCuentaBancoComercio, monto, codigoTransaccion);
+        
+        if (cuentaPasarela.getDepositos().contains(deposito)) {
+            LOG.info("[ServicioTransferencia] Deposito registrado en pasarela de pagos");
+        } else {
+            LOG.warning("[ServicioTransferencia] Error al registrar el deposito en la pasarela de pagos");
+            return false; //Si no se pudo registrar el deposito, se retorna false
+        }
         
         //Se envia al Modulo Monitoreo
         publicadorEvento.publicarDepositoFinalizado(

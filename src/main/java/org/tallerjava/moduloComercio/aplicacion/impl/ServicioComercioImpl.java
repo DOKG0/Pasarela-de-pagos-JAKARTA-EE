@@ -3,6 +3,8 @@ package org.tallerjava.moduloComercio.aplicacion.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.logging.Logger;
+
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.CuentaBancoComercio;
@@ -10,11 +12,13 @@ import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
+import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloSeguridad.aplicacion.ServicioSeguridad;
 
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
 
+    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     private RepositorioComercio repositorio;
     @Inject
@@ -42,7 +46,8 @@ public class ServicioComercioImpl implements ServicioComercio {
         } else {
             repositorio.eliminarComercio(idComercio);
         }
-       
+
+        LOG.info("[ServicioComercio] Comercio creado con id: " + idComercio);
         return idComercio;
     }
 
@@ -61,6 +66,7 @@ public class ServicioComercioImpl implements ServicioComercio {
             rut == null ? comercio.getRut() : rut
         );
 
+        LOG.info("[ServicioComercio] Comercio con id: " + id + " actualizado" );
         return repositorio.actualizarComercio(comercio);
     }
 
@@ -89,7 +95,8 @@ public class ServicioComercioImpl implements ServicioComercio {
                 comercioActualizado.getId()
             );
 
-            return idPos;
+            LOG.info("[ServicioComercio] Pos creado con id: " + nuevoPos.getId() + " en comercio con id: " + idComercio);
+            return nuevoPos.getId();
         } else {
             return -1;
         }
@@ -106,14 +113,8 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (pos == null) return false;
 
         pos.setHabilitado(estado);
-        boolean actualizacionExitosa = repositorio.actualizarComercio(comercio);
-        if (actualizacionExitosa) {
-            publicador.publicarEventoModificacionPos(
-                identificadorPos, estado, idComercio
-            );
-        }
-
-        return actualizacionExitosa;
+        LOG.info("[ServicioComercio] Pos creado con id: " + pos.getId() + " actualizado a estado: " + estado);
+        return repositorio.actualizarComercio(comercio);
     }
 
     @Override
@@ -123,6 +124,7 @@ public class ServicioComercioImpl implements ServicioComercio {
         
         String nombreUsuario = comercio.getUsuario();
 
+        LOG.info("[ServicioComercio] Contraseña de comercio con id: " + idComercio + " actualizada" );
         return servicioSeguridad.cambiarPassword(nombreUsuario, nuevaPass);
     }
 
@@ -147,6 +149,7 @@ public class ServicioComercioImpl implements ServicioComercio {
                 reclamo.getId()
                 );
                 
+            LOG.info("[ServicioComercio] Reclamo creado con id: " + idNuevoReclamo + " en comercio con id: " + idComercio); 
             return idNuevoReclamo;
         } else {
             return -1;
