@@ -13,10 +13,6 @@ public class ServicioExternoMedioDePago {
     @Inject
     private ServicioTransferenciaFacade serviceTransferencia;
 
-    @Inject
-    private ServicioRepositorio servicioRepositorio;
-    
-
     public boolean procesarPago(String nroCuentaBancoComercio, double importe, Integer idComercio) {
 
         boolean resultado = ( (int) (Math.random() * 11) < 7);

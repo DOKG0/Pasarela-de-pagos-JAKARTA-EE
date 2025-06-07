@@ -30,13 +30,13 @@ public class ClienteHttpTransferencia {
         }
     }
 
-    public boolean enviarRespuestaProcesoPago(DTONotificacionTransferencia dto) {
+    public boolean enviarRespuestaProcesoPago(boolean exito) {
         try {
             Client client = ClientBuilder.newClient();
             Response response = client
-                    .target(ENDPOINT_COMPRA)
-                    .request(MediaType.APPLICATION_JSON)
-                    .post(Entity.entity(dto, MediaType.APPLICATION_JSON));
+                .target(ENDPOINT_COMPRA)
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(exito, MediaType.APPLICATION_JSON));
 
             return response.getStatus() == 200;
         } catch (Exception e) {
