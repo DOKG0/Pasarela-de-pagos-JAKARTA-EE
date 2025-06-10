@@ -1,0 +1,61 @@
+Abrir terminal en la direccion del archivo "docker-compose.yml"
+
+###Comandos
+
+#Una sola vez
+comando -> docker compose up -d // crea los volumenes y los contenedores y los inicia (segundo plano)
+
+comando -> docker ps -a // muestra los contenedores que hay (ejecucion y detenidos)
+
+comando -> docker ps // muestra los contenedores en ejecucion
+
+comando -> docker start NombreCOntenedor // inicia el/los contenedores, puede ser mas de 1 a la vez sin coma solo con espacios
+
+comando -> docker stop NombreContenedor // detiene el contenedor
+
+comando -> docker restart NombreContenedor // reinicia el contenedor
+
+comando -> docker logs NombreContenedor // muestra los logs de un contenedores
+
+comando -> docker logs -f NombreContenedor // muestra los logs de un contenedor en tiempo real
+
+comando -> docker rm NombreContenedor // elimina el contenedor (no elimina el volumen)
+
+comando -> docker compose down // apaga los servicios
+
+comando -> docker compose ps // ver el estado
+
+
+
+## No necesario en este caso
+
+comando -> docker exec -it nombreContenedor /bin/bash // accede a la terminal/shell del contenedor
+
+
+###Comandos a usar
+
+#La primera vez
+comando -> docker compose up -d // crea los volumenes y los contenedores y los inicia (segundo plano)
+
+Nota: si ejecutaste por primera vez el comando de arriba no hace falta el comando
+de abajo hasta que apagues la pc o uses el comando "docker compose down"
+
+#Luego de apagar la pc o apagor los servicios con "docker compose down"
+comando -> docker start influxdb grafana
+
+
+###Acceder a grafana
+
+http://localhost:3000
+
+id -> admin
+pass -> admin
+
+Nota: seguramente te pida crear una nueva pass para no usar la default
+
+###Acceder a influxdb
+
+http://localhost:8086
+
+id -> admin
+pass -> admin123
