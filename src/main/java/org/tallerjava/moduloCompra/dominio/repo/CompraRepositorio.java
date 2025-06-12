@@ -12,4 +12,5 @@ public interface CompraRepositorio {
     Integer guardarComercio(@Observes EventoComercio eventoComercio);
     boolean actualizarComercio(Comercio comercio);
     Comercio buscarPorId(Integer id);
+    Integer traerIdCompra(Integer id);
 }
