@@ -12,6 +12,7 @@ import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
+import org.tallerjava.moduloCompra.dominio.Pos;
 import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
@@ -37,11 +38,15 @@ public class ServicioCompraImpl implements ServicioCompra{
     private ServicioExternoMedioDePago servicioExterno;
 
     @Override
-    public boolean procesarPago(Integer idComercio, double importe, boolean resultado) {
+    public boolean procesarPago(Integer idComercio, double importe, boolean resultado, Integer idPos) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
         
-        Compra nuevaCompra = new Compra(importe);    
+        Pos pos = comercio.buscarPosPorId(idPos);
+        //si el comercio no tiene ese pos o el pos esta deshabilitado
+        if (pos == null || !pos.isHabilitado()) return false; 
+
+        Compra nuevaCompra = new Compra(importe);
         comercio.agregarCompra(nuevaCompra);
         
         if (comercio.getCompras().contains(nuevaCompra)) {

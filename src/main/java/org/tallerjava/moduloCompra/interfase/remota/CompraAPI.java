@@ -6,13 +6,13 @@ import java.util.logging.Logger;
 
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
-import org.tallerjava.moduloCompra.dominio.Tarjeta;
-import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
+import org.tallerjava.moduloCompra.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesComercio;
 import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -22,8 +22,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Tag(name="API del Módulo Compra")
 @ApplicationScoped
@@ -36,20 +38,16 @@ public class CompraAPI {
 
     @Inject
     ClienteHttpCompra httpClient;
-    //Antes
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroTarjeta": "123", "marcaTarjeta": "visa", "fechaVtoTarjeta": "2025-05-17", "importe": 10000 }'
-   
-    //Nuevo
-    //curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"0011223344","idComercio":1,"monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
-
-
-   
+    
     @POST
     @Path("/{idComercio}/nueva-compra")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
     public Response procesarPago(
-        //@PathParam("idComercio") Integer idComercio, 
-        //DTOPago datosCompra) {
+        @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         DTOTransferencia datosCompra) {  
             
        
@@ -61,27 +59,29 @@ public class CompraAPI {
             LOG.info("[Compra] Resultado booleano del Servicio Externo: " + resultado);
 
             //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
-            servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado);
+            servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado, datosCompra.getIdPos());
             
             if (resultado) {
                 return Response
                 .ok()
                 .build();
-            } else {
-                return Response
+        } else {
+            return Response
                 .serverError()
                 .entity("{\"error\": \"El pago fue rechazado\"}")
                 .status(500)
                 .build();
-            }
+        }
     }
 
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-05-18"
     @GET
     @Path("/{idComercio}/resumen/periodo")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
     public Response obtenerResumenDeVentasPorPeriodo(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         @QueryParam("fechaInicio") String fechaInicioStr,
         @QueryParam("fechaFin") String fechaFinStr) {
             /*
@@ -99,10 +99,10 @@ public class CompraAPI {
             } finally {
                 if (fechaInicio == null || fechaFin == null) {
                     return Response
-                    .serverError()
-                    .entity("{\"error\": \"Error al procesar los parametros\"}")
-                    .status(500)
-                    .build();
+                        .serverError()
+                        .entity("{\"error\": \"Error al procesar los parametros\"}")
+                        .status(500)
+                        .build();
                 }
             }
 
@@ -110,31 +110,32 @@ public class CompraAPI {
 
             if (resumen == null) {
                 return Response
-                .serverError()
-                .entity("{\"error\": \"Error al generar el resumen\"}")
-                .status(500)
-                .build();
+                    .serverError()
+                    .entity("{\"error\": \"Error al generar el resumen\"}")
+                    .status(500)
+                    .build();
             } else {
                 return Response.ok(resumen).build();
             }
     }
 
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
-    //curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
     @GET
     @Path("/{idComercio}/resumen/por-estado")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("comercio")
+    @ApiInterceptorCredencialesComercio
     public Response obtenerResumenDeVentasDiario(
         @PathParam("idComercio") Integer idComercio,
+        @Context SecurityContext securityContext,
         @QueryParam("estado") EstadoCompra estado) {
 
         DTOResumenVentas resumen = servicioCompra.resumenVentasPorEstado(idComercio, estado);
         if (resumen == null) {
             return Response
-            .serverError()
-            .entity("{\"error\": \"Error al generar el resumen\"}")
-            .status(500)
-            .build();
+                .serverError()
+                .entity("{\"error\": \"Error al generar el resumen\"}")
+                .status(500)
+                .build();
         } else {
             return Response.ok(resumen).build();
         }

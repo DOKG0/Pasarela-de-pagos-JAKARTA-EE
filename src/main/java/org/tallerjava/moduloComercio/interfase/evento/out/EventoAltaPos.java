@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventoComercio {
+public class EventoAltaPos {
+    private Integer id;
+    private String identificador;
+    private boolean habilitado;
     private Integer idComercio;
-    private String nroCuentaBancoComercio;
-    private Integer idCuentaBanco;
-    private String usuarioComercio;
 }

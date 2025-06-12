@@ -1,0 +1,27 @@
+## NUEVA COMPRA
+
+### PAGO ACEPTADO O RECHAZADO
+>   curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+### 403 Forbidden
+//credenciales incorrectas
+>   curl -v --user nextriguser:1 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+//sin credenciales
+>   curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+//credenciales de otro comercio
+>   curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+
+
+## RESUMEN DE VENTAS
+
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+
+## RESUMEN DE VENTAS POR ESTADO
+
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=PENDIENTE"

@@ -135,6 +135,18 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- Soap -->
+		<dependency>
+    		<groupId>com.sun.xml.ws</groupId>
+   			 <artifactId>rt</artifactId>
+   			 <version>4.0.2</version>
+		</dependency>
+		<!-- ratelimiter -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-core</artifactId>
+			<version>8.10.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -145,6 +157,17 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler-plugin.version}</version>
 			</plugin>
+
+            <plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.3</version>
+				<configuration>
+					<excludes>
+            			**/integration/*.java
+        			</excludes>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${war-plugin.version}</version>

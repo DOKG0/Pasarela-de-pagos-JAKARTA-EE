@@ -8,6 +8,7 @@ import org.tallerjava.moduloCompra.dominio.datatypes.DTOCompra;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -27,7 +28,16 @@ import lombok.NoArgsConstructor;
 public class Comercio {
     @Id
     private Integer id;
+    @Column(unique = true)
+    private String usuario;
     private double importeVentasDelDia; //to do: implementar un schedule que lo resetee a 0 todos los dias
+
+    @OneToMany(
+        mappedBy = "comercio",
+        orphanRemoval = true, 
+        fetch = FetchType.EAGER,
+        cascade = CascadeType.ALL)
+    private List<Pos> poses = new ArrayList<Pos>();
 
     @OneToMany(
         orphanRemoval = true, 
@@ -91,5 +101,27 @@ public class Comercio {
         resumen.setVentas(compras);
 
         return resumen;
+    }
+
+    public Pos buscarPosPorId(Integer id) {
+        for (Pos pos : this.poses) {
+            if (pos.getId().equals(id)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    public Pos buscarPosPorIdentificador(String identificadorPos) {
+        for (Pos pos : this.poses) {
+            if (pos.getIdentificador().equals(identificadorPos)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    public void agregarPos(Pos pos) {
+        this.poses.add(pos);
     }
 }

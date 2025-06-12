@@ -30,4 +30,5 @@ public class ServicioSeguridadImpl implements ServicioSeguridad {
         String nuevaPasswordHash = HashFunctionUtil.convertToHash(password);
         return repositorio.cambiarPassword(nombreUsuario, nuevaPasswordHash);
     }
+
 }

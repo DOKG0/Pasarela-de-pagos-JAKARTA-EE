@@ -1,6 +1,5 @@
 package org.tallerjava.moduloCompra.interfase.remota;
 
-import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
 
 import jakarta.enterprise.context.ApplicationScoped;

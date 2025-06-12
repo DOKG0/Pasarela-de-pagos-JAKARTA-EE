@@ -1,5 +1,4 @@
 package org.tallerjava.moduloComercio.interfase.evento.out;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventoComercio {
+public class EventoModificacionPos {
+    private Integer idPos;
     private Integer idComercio;
-    private String nroCuentaBancoComercio;
-    private Integer idCuentaBanco;
-    private String usuarioComercio;
+    private boolean estadoPos;
 }

@@ -21,9 +21,14 @@ import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoDepositoFin
 import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoPagoProcesado;
 import org.tallerjava.moduloTransferencia.interfase.evento.out.EventoTransferenciaRecibida;
 import org.tallerjava.moduloTransferencia.interfase.evento.out.PublicadorEvento;
+import org.tallerjava.servicioExterno.interfase.remota.ClienteHttpTransferencia;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.OutputStream;
+import java.io.InputStream;
 
 @ApplicationScoped
 public class ServicioTransferenciaImpl implements ServicioTransferencia{
@@ -37,6 +42,10 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
 
     @Inject
     CuentaBancariaPasarela cuentaPasarela;
+
+    @Inject
+    private ClienteHttpTransferencia clienteHttpTransferencia;
+
     
     public boolean recibirNotificacionTransferenciaDesdeMedioPago(
         String nroCuentaBancoComercio, 
@@ -71,6 +80,7 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         //Se crea la el deposito y se registra en la pasarela de pagos, a su vez se guarda en la lista de depositos del comercio
         Deposito deposito = new Deposito(idComercio, montoBigDecimal, transferencia.getId());
         cuentaPasarela.registrarDepositoAComercio(deposito, idComercio);
+        clienteHttpTransferencia.notificarBancoSoapHttp(nroCuentaBancoComercio, monto, codigoTransaccion);
         
         if (cuentaPasarela.getDepositos().contains(deposito)) {
             LOG.info("[ServicioTransferencia] Deposito registrado en pasarela de pagos");
@@ -102,4 +112,6 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         List<Deposito> depositos = repositorio.buscarDepositosPorComercioYFecha(idComercio, fechaInicial, fechaFin);
         return depositos;
     }
+
+    
 }

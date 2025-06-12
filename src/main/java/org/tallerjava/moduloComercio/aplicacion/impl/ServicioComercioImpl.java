@@ -29,22 +29,22 @@ public class ServicioComercioImpl implements ServicioComercio {
     @Override
     public Integer altaComercio(Comercio comercio, String password) {
 
-        
-        boolean registroExitoso = servicioSeguridad.altaComercio(comercio.getUsuario(), password);
-        if (!registroExitoso) {
-            return -1; //salida temprana si no se creo correctamente el usuario
-        }
         Integer idComercio = repositorio.guardarComercio(comercio);
 
-        if (idComercio != -1) { //solo si se creo correctamente el comercio
+        //solo si se creo correctamente el comercio y su usuario
+        if (idComercio != -1 && servicioSeguridad.altaComercio(comercio.getUsuario(), password)) { 
+
             Comercio nuevoComercio = repositorio.buscarPorId(idComercio);
             CuentaBancoComercio nuevaCuentaBanco = nuevoComercio.getCuentaBancoComercio();
 
             publicador.publicarEventoComercio(
                 idComercio, 
                 nuevaCuentaBanco.getNumeroCuenta(),
-                nuevaCuentaBanco.getId()
+                nuevaCuentaBanco.getId(),
+                nuevoComercio.getUsuario()
                 );
+        } else {
+            repositorio.eliminarComercio(idComercio);
         }
 
         LOG.info("[ServicioComercio] Comercio creado con id: " + idComercio);
@@ -76,6 +76,9 @@ public class ServicioComercioImpl implements ServicioComercio {
 
         if (comercio == null) return -1;
 
+        Pos posPreexistente = comercio.buscarPosPorIdentificador(pos.getIdentificador());
+        if (posPreexistente != null) return -1; //un pos con el mismo nombre ya existe para ese comercio
+
         comercio.agregarPos(pos);
         pos.setComercio(comercio);
         boolean resultado = repositorio.actualizarComercio(comercio);
@@ -83,6 +86,15 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (resultado) {
             Comercio comercioActualizado = repositorio.buscarPorId(idComercio);
             Pos nuevoPos = comercioActualizado.buscarPosPorIdentificador(pos.getIdentificador());
+            Integer idPos = nuevoPos.getId();
+
+            publicador.publicarEventoAltaPos(
+                idPos, 
+                nuevoPos.getIdentificador(), 
+                nuevoPos.isHabilitado(), 
+                comercioActualizado.getId()
+            );
+
             LOG.info("[ServicioComercio] Pos creado con id: " + nuevoPos.getId() + " en comercio con id: " + idComercio);
             return nuevoPos.getId();
         } else {
