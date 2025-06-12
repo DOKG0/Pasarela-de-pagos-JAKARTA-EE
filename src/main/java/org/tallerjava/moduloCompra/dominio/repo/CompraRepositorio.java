@@ -9,4 +9,5 @@ public interface CompraRepositorio {
     Integer guardarComercio(Integer idComercio, String nroCuentaBancoComercio, Integer idCuentaBanco, String usuarioComercio);
     boolean actualizarComercio(Comercio comercio);
     Comercio buscarPorId(Integer id);
+    Integer traerIdCompra(Integer id);
 }

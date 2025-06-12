@@ -48,7 +48,6 @@ public class ServicioCompraImpl implements ServicioCompra{
 
         Compra nuevaCompra = new Compra(importe);
         comercio.agregarCompra(nuevaCompra);
-        repositorio.actualizarComercio(comercio);
         
         if (comercio.getCompras().contains(nuevaCompra)) {
             LOG.info("[ServicioCompra] Compra registrada en comercio");
@@ -67,11 +66,10 @@ public class ServicioCompraImpl implements ServicioCompra{
         }
 
         repositorio.actualizarComercio(comercio);
-
-        publicador.publicarEventoPago(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
+        publicador.publicarEventoPago(idComercio, repositorio.traerIdCompra(idComercio), nuevaCompra.getEstado());
 
         if(!resultado){
-            publicador.publicarEventoPagoError(idComercio, nuevaCompra.getId(), nuevaCompra.getEstado());
+            publicador.publicarEventoPagoError(idComercio, repositorio.traerIdCompra(idComercio), nuevaCompra.getEstado());
         }
 
         return resultado;
