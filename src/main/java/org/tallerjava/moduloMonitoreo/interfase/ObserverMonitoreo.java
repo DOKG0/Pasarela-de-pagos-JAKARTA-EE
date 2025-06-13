@@ -36,9 +36,8 @@ public class ObserverMonitoreo {
      // moduloCompra
     // Observador para EventoPago  CU notificarPago()
     public void onPago(@Observes EventoPago evento) {
-        LOG.info("[Monitoreo] Pago realizado - Comercio: " + evento.getIdComercio() + " - Compra: " + evento.getIdCompra() 
-                + ", Estado: " + evento.getEstadoCompra());
-                metricas.getRegistry().counter("pagos_realizados_total").increment();
+        LOG.info("[Monitoreo] Solicitud de pago realizada - Comercio: " + evento.getIdComercio() + " - Compra: " + evento.getIdCompra());
+        metricas.getRegistry().counter("pagos_realizados_total").increment();
     }
 
     // Observador para EventoPagoError  CU notificarPagoError()

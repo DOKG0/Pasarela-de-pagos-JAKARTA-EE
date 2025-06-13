@@ -74,6 +74,7 @@ public class CompraRepositorioImpl implements CompraRepositorio {
             Comercio comercioExistente = buscarPorId(comercio.getId());
             if (comercioExistente != null) {
                 em.merge(comercio);
+                em.flush();
                 return true;
             }
             return false;
@@ -91,4 +92,14 @@ public class CompraRepositorioImpl implements CompraRepositorio {
         }
     }
 
+
+    @Override
+    public Integer traerIdCompra(Integer id) {
+        try {
+            Comercio comercio = buscarPorId(id);
+            return comercio.getCompras().get(comercio.getCompras().size()-1).getId();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
