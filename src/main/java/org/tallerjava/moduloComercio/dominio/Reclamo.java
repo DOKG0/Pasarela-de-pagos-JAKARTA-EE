@@ -23,6 +23,7 @@ public class Reclamo {
     private String texto;
     private LocalDateTime fecha;
     private EstadoReclamo estado;
+    private CategoriaReclamo categoria;
 
     public Reclamo(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
@@ -31,5 +32,10 @@ public class Reclamo {
         this.texto = texto;
         this.fecha = LocalDateTime.now();
         this.estado = EstadoReclamo.PENDIENTE;
-        }
+         /*
+         * Los reclamos se crean con categoria sin definir, 
+         * pero se les asigna de forma asincronica con la cola de mensajes
+         */
+        this.categoria = CategoriaReclamo.SIN_DEFINIR; 
+    }
 }

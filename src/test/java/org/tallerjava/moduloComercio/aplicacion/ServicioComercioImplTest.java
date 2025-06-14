@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.tallerjava.moduloComercio.aplicacion.impl.ServicioComercioImpl;
 import org.tallerjava.moduloComercio.dominio.*;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
+import org.tallerjava.moduloComercio.infraestructura.messaging.EmisorMensajeUtil;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloSeguridad.aplicacion.ServicioSeguridad;
 
@@ -30,6 +31,9 @@ class ServicioComercioImplTest {
 
     @Mock
     private ServicioSeguridad servicioSeguridad;
+
+    @Mock
+    private EmisorMensajeUtil emisorMensajeUtil;
 
     @InjectMocks
     private ServicioComercioImpl servicio;

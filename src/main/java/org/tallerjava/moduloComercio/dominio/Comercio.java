@@ -87,5 +87,14 @@ public class Comercio {
         }
         return null;
     }
+
+    public Reclamo buscarReclamoPorId(Integer idReclamo) {
+        for (Reclamo rec : this.reclamos) {
+            if (rec.getId().equals(idReclamo)) {
+                return rec;
+            }
+        }
+        return null;
+    }
     
 }
