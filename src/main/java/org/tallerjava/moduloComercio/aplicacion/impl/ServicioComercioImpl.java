@@ -6,11 +6,13 @@ import jakarta.inject.Inject;
 import java.util.logging.Logger;
 
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
+import org.tallerjava.moduloComercio.dominio.CategoriaReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.CuentaBancoComercio;
 import org.tallerjava.moduloComercio.dominio.Pos;
 import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
+import org.tallerjava.moduloComercio.infraestructura.messaging.EmisorMensajeUtil;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloSeguridad.aplicacion.ServicioSeguridad;
@@ -25,6 +27,8 @@ public class ServicioComercioImpl implements ServicioComercio {
     private PublicadorEvento publicador;
     @Inject
     private ServicioSeguridad servicioSeguridad;
+    @Inject
+    private EmisorMensajeUtil emisorMensajeReclamo;
 
     @Override
     public Integer altaComercio(Comercio comercio, String password) {
@@ -148,11 +152,26 @@ public class ServicioComercioImpl implements ServicioComercio {
                 idComercio, 
                 reclamo.getId()
                 );
-                
+            
+            //se envia el reclamo a la cola de mensajes para que sea evaluado de forma asincronica
+            emisorMensajeReclamo.enviarMensajeReclamo(idComercio, idNuevoReclamo, reclamo.getTexto());
+
             LOG.info("[ServicioComercio] Reclamo creado con id: " + idNuevoReclamo + " en comercio con id: " + idComercio); 
             return idNuevoReclamo;
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public boolean categorizarReclamo(Integer idComercio, Integer idReclamo, CategoriaReclamo categoriaReclamo) {
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) return false;
+
+        Reclamo reclamo = comercio.buscarReclamoPorId(idReclamo);
+        if (reclamo == null) return false;
+
+        reclamo.setCategoria(categoriaReclamo);
+        return repositorio.actualizarComercio(comercio);
     }
 }

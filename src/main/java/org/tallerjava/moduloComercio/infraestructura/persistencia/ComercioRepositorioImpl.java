@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.tallerjava.moduloComercio.dominio.Comercio;
-import org.tallerjava.moduloComercio.dominio.CuentaBancoComercio;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 
 @ApplicationScoped

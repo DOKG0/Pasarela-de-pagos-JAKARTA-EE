@@ -208,6 +208,8 @@
 					<scripts>
 						<!-- ver archivo config.cli que está en ./ -->
 						<script>config.cli</script>
+						<!-- configuracion de la cola de mensajes -->
+						<script>queue.config</script>
 					</scripts>
 				</configuration>
 			</plugin>
