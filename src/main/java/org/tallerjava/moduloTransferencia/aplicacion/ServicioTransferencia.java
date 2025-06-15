@@ -1,6 +1,5 @@
 package org.tallerjava.moduloTransferencia.aplicacion;
 
-import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
 import java.time.LocalDate;
 import java.util.List;

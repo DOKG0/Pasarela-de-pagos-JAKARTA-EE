@@ -7,8 +7,6 @@ import org.tallerjava.moduloTransferencia.aplicacion.ServicioTransferencia;
 import org.tallerjava.moduloTransferencia.datatypes.DTONotificacionTransferencia;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

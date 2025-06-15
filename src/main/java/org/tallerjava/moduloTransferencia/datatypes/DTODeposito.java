@@ -1,7 +1,6 @@
 package org.tallerjava.moduloTransferencia.datatypes;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
 
