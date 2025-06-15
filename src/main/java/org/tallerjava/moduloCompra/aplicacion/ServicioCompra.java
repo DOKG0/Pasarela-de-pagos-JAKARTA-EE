@@ -1,9 +1,6 @@
 package org.tallerjava.moduloCompra.aplicacion;
 
-import org.tallerjava.moduloCompra.dominio.Comercio;
-import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
-import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 
 import java.time.LocalDateTime;

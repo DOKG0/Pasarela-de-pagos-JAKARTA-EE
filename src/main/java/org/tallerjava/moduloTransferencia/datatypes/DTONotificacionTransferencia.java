@@ -1,7 +1,5 @@
 package org.tallerjava.moduloTransferencia.datatypes;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 @Data
 public class DTONotificacionTransferencia {

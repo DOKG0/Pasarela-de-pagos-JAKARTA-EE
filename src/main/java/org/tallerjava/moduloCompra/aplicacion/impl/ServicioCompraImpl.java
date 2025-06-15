@@ -7,16 +7,13 @@ import javax.management.RuntimeErrorException;
 
 import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
-import org.tallerjava.moduloComercio.interfase.local.ServicioComercioFacade;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 import org.tallerjava.moduloCompra.dominio.Pos;
-import org.tallerjava.moduloCompra.dominio.Tarjeta;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
-import org.tallerjava.servicioExterno.ServicioExternoMedioDePago;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -27,15 +24,9 @@ public class ServicioCompraImpl implements ServicioCompra{
     private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     private CompraRepositorio repositorio;
-    
-    @Inject
-    private ServicioComercioFacade serviceComercio;
 
     @Inject
     private PublicadorEvento publicador;
-
-    @Inject
-    private ServicioExternoMedioDePago servicioExterno;
 
     @Override
     public boolean procesarPago(Integer idComercio, double importe, boolean resultado, Integer idPos) {

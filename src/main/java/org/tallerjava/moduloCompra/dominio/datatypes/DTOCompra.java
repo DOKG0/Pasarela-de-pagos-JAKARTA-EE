@@ -1,7 +1,5 @@
 package org.tallerjava.moduloCompra.dominio.datatypes;
 
-import java.time.LocalDateTime;
-
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 
 import lombok.AllArgsConstructor;
