@@ -15,7 +15,7 @@ import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 import org.tallerjava.moduloComercio.infraestructura.messaging.EmisorMensajeUtil;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
-import org.tallerjava.moduloSeguridad.aplicacion.ServicioSeguridad;
+import org.tallerjava.moduloSeguridad.interfase.local.ServicioSeguridadFacade;
 
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
@@ -26,7 +26,7 @@ public class ServicioComercioImpl implements ServicioComercio {
     @Inject
     private PublicadorEvento publicador;
     @Inject
-    private ServicioSeguridad servicioSeguridad;
+    private ServicioSeguridadFacade servicioSeguridad;
     @Inject
     private EmisorMensajeUtil emisorMensajeReclamo;
 
