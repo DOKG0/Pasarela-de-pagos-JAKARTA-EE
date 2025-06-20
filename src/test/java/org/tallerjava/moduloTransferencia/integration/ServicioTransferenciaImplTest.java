@@ -3,7 +3,7 @@ package org.tallerjava.moduloTransferencia.integration;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.tallerjava.servicioExterno.interfase.remota.ClienteHttpTransferencia;
+import org.tallerjava.moduloTransferencia.interfase.remota.ClienteHttpTransferencia;
 
 public class ServicioTransferenciaImplTest {
 

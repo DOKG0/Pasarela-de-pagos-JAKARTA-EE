@@ -12,7 +12,7 @@ import org.tallerjava.moduloTransferencia.dominio.Deposito;
 import org.tallerjava.moduloTransferencia.dominio.Transferencia;
 import org.tallerjava.moduloTransferencia.dominio.repo.TransferenciaRepositorio;
 import org.tallerjava.moduloTransferencia.interfase.evento.out.PublicadorEvento;
-import org.tallerjava.servicioExterno.interfase.remota.ClienteHttpTransferencia;
+import org.tallerjava.moduloTransferencia.interfase.remota.ClienteHttpTransferencia;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

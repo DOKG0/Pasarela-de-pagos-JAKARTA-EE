@@ -1,4 +1,4 @@
-package org.tallerjava.servicioExterno.rateLimiter;
+package org.tallerjava.moduloSeguridad.infraestructura.rateLimiter;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
