@@ -1,12 +1,10 @@
 package org.tallerjava.moduloCompra.aplicacion.impl;
 
 import java.time.LocalDateTime;
-import java.util.logging.Logger;
 
 import javax.management.RuntimeErrorException;
 
 import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
-import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
@@ -21,7 +19,6 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioCompraImpl implements ServicioCompra{
     
-    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     private CompraRepositorio repositorio;
 
@@ -41,19 +38,19 @@ public class ServicioCompraImpl implements ServicioCompra{
         comercio.agregarCompra(nuevaCompra);
         
         if (comercio.getCompras().contains(nuevaCompra)) {
-            LOG.info("[ServicioCompra] Compra registrada en comercio");
+            System.out.println("[ServicioCompra] Compra registrada en comercio");
         } else {
-            LOG.warning("[ServicioCompra] Error al registrar la compra en el comercio");
+            System.out.println("[ServicioCompra] Error al registrar la compra en el comercio");
             throw new RuntimeErrorException(null, "Error al registrar la compra en el comercio");
         }
 
         if (resultado) {
             nuevaCompra.setEstado(EstadoCompra.APROBADA);
             comercio.setImporteVentasDelDia(comercio.getImporteVentasDelDia() + importe);
-            LOG.info("[ServicioCompra] Compra Aprobada");
+            System.out.println("[ServicioCompra] Compra Aprobada");
         } else {
             nuevaCompra.setEstado(EstadoCompra.RECHAZADA);
-            LOG.info("[ServicioCompra] Compra Rechazada");
+            System.out.println("[ServicioCompra] Compra Rechazada");
         }
 
         repositorio.actualizarComercio(comercio);
