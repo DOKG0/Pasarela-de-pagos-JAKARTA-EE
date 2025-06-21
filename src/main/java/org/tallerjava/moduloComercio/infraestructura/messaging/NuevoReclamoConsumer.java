@@ -46,7 +46,7 @@ public class NuevoReclamoConsumer implements MessageListener {
 
             //llamo al evaluador de reclamos para obtener la categoria
             CategoriaReclamo categoriaReclamo = evaluadorDeReclamos.evaluarReclamo(reclamoMessage.texto());
-
+            
             //llamo al servicioComercio para actualizar la categoria del reclamo
             servicioComercio.categorizarReclamo(
                 reclamoMessage.idComercio(),
