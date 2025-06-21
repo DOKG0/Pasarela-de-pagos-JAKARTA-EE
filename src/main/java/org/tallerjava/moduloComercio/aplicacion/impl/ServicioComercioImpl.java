@@ -3,6 +3,8 @@ package org.tallerjava.moduloComercio.aplicacion.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.logging.Logger;
+
 import org.tallerjava.moduloComercio.aplicacion.ServicioComercio;
 import org.tallerjava.moduloComercio.dominio.CategoriaReclamo;
 import org.tallerjava.moduloComercio.dominio.Comercio;
@@ -17,6 +19,8 @@ import org.tallerjava.moduloSeguridad.interfase.local.ServicioSeguridadFacade;
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
 
+    private static final Logger LOG = Logger.getLogger(ServicioComercioImpl.class.getName());
+    
     @Inject
     private RepositorioComercio repositorio;
     @Inject
@@ -47,7 +51,7 @@ public class ServicioComercioImpl implements ServicioComercio {
             repositorio.eliminarComercio(idComercio);
         }
 
-        System.out.println("[ServicioComercio] Comercio creado con id: " + idComercio);
+        LOG.info("[ServicioComercio] Comercio creado con id: " + idComercio);
         return idComercio;
     }
 
@@ -66,7 +70,7 @@ public class ServicioComercioImpl implements ServicioComercio {
             rut == null ? comercio.getRut() : rut
         );
 
-        System.out.println("[ServicioComercio] Comercio con id: " + id + " actualizado" );
+        LOG.info("[ServicioComercio] Comercio con id: " + id + " actualizado" );
         return repositorio.actualizarComercio(comercio);
     }
 
@@ -95,7 +99,7 @@ public class ServicioComercioImpl implements ServicioComercio {
                 comercioActualizado.getId()
             );
 
-            System.out.println("[ServicioComercio] Pos creado con id: " + nuevoPos.getId() + " en comercio con id: " + idComercio);
+            LOG.info("[ServicioComercio] Pos creado con id: " + nuevoPos.getId() + " en comercio con id: " + idComercio);
             return nuevoPos.getId();
         } else {
             return -1;
@@ -113,7 +117,7 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (pos == null) return false;
 
         pos.setHabilitado(estado);
-        System.out.println("[ServicioComercio] Pos creado con id: " + pos.getId() + " actualizado a estado: " + estado);
+        LOG.info("[ServicioComercio] Pos creado con id: " + pos.getId() + " actualizado a estado: " + estado);
         return repositorio.actualizarComercio(comercio);
     }
 
@@ -124,7 +128,7 @@ public class ServicioComercioImpl implements ServicioComercio {
         
         String nombreUsuario = comercio.getUsuario();
 
-        System.out.println("[ServicioComercio] Contraseña de comercio con id: " + idComercio + " actualizada" );
+        LOG.info("[ServicioComercio] Contraseña de comercio con id: " + idComercio + " actualizada" );
         return servicioSeguridad.cambiarPassword(nombreUsuario, nuevaPass);
     }
 
@@ -152,7 +156,7 @@ public class ServicioComercioImpl implements ServicioComercio {
             //se envia el reclamo a la cola de mensajes para que sea evaluado de forma asincronica
             emisorMensajeReclamo.enviarMensajeReclamo(idComercio, idNuevoReclamo, reclamo.getTexto());
 
-            System.out.println("[ServicioComercio] Reclamo creado con id: " + idNuevoReclamo + " en comercio con id: " + idComercio); 
+            LOG.info("[ServicioComercio] Reclamo creado con id: " + idNuevoReclamo + " en comercio con id: " + idComercio); 
             return idNuevoReclamo;
         } else {
             return -1;

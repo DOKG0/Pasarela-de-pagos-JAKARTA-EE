@@ -3,6 +3,7 @@ package org.tallerjava.moduloTransferencia.aplicacion.impl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.tallerjava.moduloTransferencia.aplicacion.ServicioTransferencia;
 import org.tallerjava.moduloTransferencia.dominio.CuentaBancariaPasarela;
@@ -18,6 +19,8 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioTransferenciaImpl implements ServicioTransferencia{
 
+    private static final Logger LOG = Logger.getLogger(ServicioTransferenciaImpl.class.getName());
+    
     @Inject
     private TransferenciaRepositorio repositorio;
 
@@ -48,9 +51,9 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         cuentaPasarela.registrarTransferenciaEntrante(transferencia);
         
         if(cuentaPasarela.getTransferencias().contains(transferencia)){
-            System.out.println("[ServicioTransferencia] Transferencia registrada en pasarela de pagos");
+            LOG.info("[ServicioTransferencia] Transferencia registrada en pasarela de pagos");
         } else {
-            System.out.println("[ServicioTransferencia] Error al registrar la transferencia en la pasarela de pagos");
+            LOG.info("[ServicioTransferencia] Error al registrar la transferencia en la pasarela de pagos");
             return false; //Si no se pudo registrar la transferencia, se retorna false
         }
 
@@ -67,9 +70,9 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         clienteHttpTransferencia.notificarBancoSoapHttp(nroCuentaBancoComercio, monto, codigoTransaccion);
         
         if (cuentaPasarela.getDepositos().contains(deposito)) {
-            System.out.println("[ServicioTransferencia] Deposito registrado en pasarela de pagos");
+            LOG.info("[ServicioTransferencia] Deposito registrado en pasarela de pagos");
         } else {
-            System.out.println("[ServicioTransferencia] Error al registrar el deposito en la pasarela de pagos");
+            LOG.info("[ServicioTransferencia] Error al registrar el deposito en la pasarela de pagos");
             return false; //Si no se pudo registrar el deposito, se retorna false
         }
         
