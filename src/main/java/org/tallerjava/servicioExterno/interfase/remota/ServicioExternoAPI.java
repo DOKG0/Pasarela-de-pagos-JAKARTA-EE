@@ -19,7 +19,7 @@ import jakarta.ws.rs.core.Response;
 public class ServicioExternoAPI {
     private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
-    ClienteHttpTransferencia clienteHttpTransferencia; // Cliente REST
+    ClienteHttpServicioExterno clienteHttpTransferencia; // Cliente REST
 
     @Inject
     ServicioExternoMedioDePago servicioExterno;
