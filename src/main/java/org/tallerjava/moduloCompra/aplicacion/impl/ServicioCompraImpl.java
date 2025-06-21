@@ -42,7 +42,7 @@ public class ServicioCompraImpl implements ServicioCompra{
         if (comercio.getCompras().contains(nuevaCompra)) {
             LOG.info("[ServicioCompra] Compra registrada en comercio");
         } else {
-            LOG.info("[ServicioCompra] Error al registrar la compra en el comercio");
+            LOG.warning("[ServicioCompra] Error al registrar la compra en el comercio");
             throw new RuntimeErrorException(null, "Error al registrar la compra en el comercio");
         }
 

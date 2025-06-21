@@ -53,7 +53,7 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         if(cuentaPasarela.getTransferencias().contains(transferencia)){
             LOG.info("[ServicioTransferencia] Transferencia registrada en pasarela de pagos");
         } else {
-            LOG.info("[ServicioTransferencia] Error al registrar la transferencia en la pasarela de pagos");
+            LOG.warning("[ServicioTransferencia] Error al registrar la transferencia en la pasarela de pagos");
             return false; //Si no se pudo registrar la transferencia, se retorna false
         }
 
