@@ -65,6 +65,18 @@ EL sistema esta organizado en una arquitectura de monolito modular
 
 - Swagger: Documentacion de APIs
 
+- RateLimiter: Evitar sobrecarga del servidor y prevenir ataque DDoS regulando el acceso
+
+- Docker: Se utiliza para la creacion, despliegue y ejecucion de aplicaciones en contenedores
+
+- Micrometer: Framework para exponer metricas
+
+- InfluxDB: Base de datos para almacenar las metricas
+
+- Grafana: Plataforma que se usa para visualizar las metricas almacenadas en influxDB en graficas en tiempo real
+
+- Jakarta Messaging: Api de java para enviar, recibir y procesar mensajes de forma asincrona
+
 #### 3. API REST
 
 **Modulo Comercio API**
@@ -212,5 +224,85 @@ Para ejecutar test especificos utilizar por ejemplo `mvn test -Dtest=CompraApiTe
 - `Basic Authentication` para todas las APIs protegidas
 - `Hashing` de contraseñas utilizando algoritmos seguros
 - `Validacion de permisos` basada en roles con anotaciones **@RolesAllowed**
+
+***RateLimiter***
+
+- Se utiliza `bucket4j` para implementar un ratelimiter que limita las peticiones de los usuarios evitando una sobrecarga en el servidor asi como tambien previniendo ataques DDoS leves definiendo una cuota de 100 peticiones como limite por minuto y en algunos endpoint una cuota de 50.
+
+---
+
+### 7. Modulo monitoreo
+
+El modulo de monitoreo permite registrar y visualizar metricas del sistema en tiempo real, facilitando el seguimiento de la actividad de la aplicacion.
+
+**¿Como funciona?**
+
+1. Se utiliza Micrometer como framework de instrumentacion para exponer metricas personalizadas.
+2. La clase `RegistroMetricasConfig` configura un `MeterRegistry` conectado a `influxDB` donde se almacenan las metricas.
+3. El observador `ObserverMonitoreo` escucha eventos relevantes del sistema como (pagos, reclamos, transferencias) y aumenta los contadores definidos cada vez que ocurre un evento.
+4. Las metricas registradas incluyen:
+    - Reclamos de comercio: (`reclamos_comercio_total`)
+    - Pagos realizados: (`pagos_realizados_total`)
+    - Pagos rechazados: (`pagos_rechazados_total`)
+    - Pagos procesados: (`pagos_procesados_total`)
+    - Transferencias recibidas: (`transferencias_recibidas_total`)
+    - Depositos finalizados: (`depositos_finalizados_total`)
+
+**Cosas destacadas** 
+- Integracion automatica: El  monitoreo es transparente para el resto de la aplicacion ya que se basa en eventos y observadores CDI.
+- Persistencia y visualizacion: Las metricas se almacenan en influxDB y son visualizadas utilizando grafana
+- Se utiliza docker compose para desplegar imagenes de influx db y grafana.
+
+---
+
+### 8. Casos de prueba
+
+**Endpoints y flujo**
+
+1. Realizar pago ok:
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
+
+    ---
+2. Realizar pago error:
+    (Credenciales de otro comercio)
+
+    `curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
+
+    ---
+3. Realizar pago con POS no habilitado:
+
+    `curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "true"}'`
+
+    ---
+4. Realizar pago con credenciales incorrectas
+
+    `curl -v --user nextriguser:1 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
+
+    ---
+5. Cambio de contraseña de comercio
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'`
+
+    ---
+6. Pagos concurrentes
+
+
+7. Prueba de RateLimiter
+
+    `for i in {1..105}
+do
+  echo "Petición $i"
+  curl -s -o /dev/null -w "%{http_code}\n" \
+    --user nextriguser:1234 \
+    -H "Content-Type: application/json" \
+    -d '{"contenidoReclamo": "no anda el pos"}' \
+    http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo
+done`
+
+    ---
+8. Un comercio realizar un reclamo
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'`
 
 ---
