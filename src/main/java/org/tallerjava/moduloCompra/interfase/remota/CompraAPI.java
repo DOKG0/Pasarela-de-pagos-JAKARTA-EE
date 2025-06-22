@@ -2,6 +2,7 @@ package org.tallerjava.moduloCompra.interfase.remota;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.EstadoCompra;
@@ -35,6 +36,9 @@ public class CompraAPI {
 
     @Inject
     ClienteHttpCompra httpClient;
+
+    private static final Logger LOG = Logger.getLogger(CompraAPI.class.getName());
+
     
     @POST
     @Path("/{idComercio}/nueva-compra")
@@ -53,7 +57,7 @@ public class CompraAPI {
                 datosCompra
             );
 
-            System.out.println("[Compra] Resultado booleano del Servicio Externo: " + resultado);
+            LOG.info("[Compra] Resultado booleano del Servicio Externo: " + resultado);
 
             //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
             servicioCompra.procesarPago(datosCompra.getIdComercio(), datosCompra.getMonto(), resultado, datosCompra.getIdPos());

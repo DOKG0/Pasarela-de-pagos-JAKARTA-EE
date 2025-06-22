@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 public class ServicioCompraImpl implements ServicioCompra{
     
     private static final Logger LOG = Logger.getLogger(ServicioCompraImpl.class.getName());
+    
     @Inject
     private CompraRepositorio repositorio;
 
