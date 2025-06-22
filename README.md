@@ -36,6 +36,8 @@ EL sistema esta organizado en una arquitectura de monolito modular
 - ***Modulo comercio***: Gestiona el registro y mantenimiento de comercio, POS y reclamos.
 
 - ***Modulo compra***: Procesa las transacciones de pago, gestiona las tarjetas y genera resumenes de ventas
+  
+- ***Modulo transferencia***: Maneja los depósitos y transferencias de los comercios y permite consultar los depósitos de un comercio
 
 - ***Modulo seguridad***: Maneja la autenticacion, autorizacion y gestion de usuarios y contraseñas
 
