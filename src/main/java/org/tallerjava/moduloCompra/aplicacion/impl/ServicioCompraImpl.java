@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import javax.management.RuntimeErrorException;
 
 import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
-import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
@@ -21,7 +20,8 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioCompraImpl implements ServicioCompra{
     
-    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServicioCompraImpl.class.getName());
+    
     @Inject
     private CompraRepositorio repositorio;
 

@@ -9,7 +9,6 @@ import org.tallerjava.moduloCompra.dominio.EstadoCompra;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
 import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
 import org.tallerjava.moduloCompra.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesComercio;
-import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
@@ -32,12 +31,14 @@ import jakarta.ws.rs.core.SecurityContext;
 @Path("/compra")
 public class CompraAPI {
     
-    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
     @Inject
     ServicioCompra servicioCompra;
 
     @Inject
     ClienteHttpCompra httpClient;
+
+    private static final Logger LOG = Logger.getLogger(CompraAPI.class.getName());
+
     
     @POST
     @Path("/{idComercio}/nueva-compra")

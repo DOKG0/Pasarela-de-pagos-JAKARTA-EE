@@ -14,13 +14,13 @@ import org.tallerjava.moduloComercio.dominio.Reclamo;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 import org.tallerjava.moduloComercio.infraestructura.messaging.EmisorMensajeUtil;
 import org.tallerjava.moduloComercio.interfase.evento.out.PublicadorEvento;
-import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloSeguridad.interfase.local.ServicioSeguridadFacade;
 
 @ApplicationScoped
 public class ServicioComercioImpl implements ServicioComercio {
 
-    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServicioComercioImpl.class.getName());
+    
     @Inject
     private RepositorioComercio repositorio;
     @Inject

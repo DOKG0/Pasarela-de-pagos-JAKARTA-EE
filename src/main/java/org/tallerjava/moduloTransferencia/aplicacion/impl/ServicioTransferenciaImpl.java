@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.tallerjava.moduloMonitoreo.interfase.ObserverMonitoreo;
 import org.tallerjava.moduloTransferencia.aplicacion.ServicioTransferencia;
 import org.tallerjava.moduloTransferencia.dominio.CuentaBancariaPasarela;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
@@ -20,7 +19,8 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class ServicioTransferenciaImpl implements ServicioTransferencia{
 
-    private static final Logger LOG = Logger.getLogger(ObserverMonitoreo.class.getName());
+    private static final Logger LOG = Logger.getLogger(ServicioTransferenciaImpl.class.getName());
+    
     @Inject
     private TransferenciaRepositorio repositorio;
 

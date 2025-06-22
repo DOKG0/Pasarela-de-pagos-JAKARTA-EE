@@ -1,5 +1,7 @@
 package org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors;
 
+import java.util.logging.Logger;
+
 import org.tallerjava.moduloComercio.dominio.Comercio;
 import org.tallerjava.moduloComercio.dominio.repo.RepositorioComercio;
 
@@ -18,6 +20,8 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
 
     @Inject
     RepositorioComercio repositorioComercio;
+
+    private static final Logger LOG = Logger.getLogger(ApiInterceptorCredencialesAdminComercioImpl.class.getName());
 
     @AroundInvoke
     public Object validarCredenciales(InvocationContext invocationContext) {
@@ -43,6 +47,8 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
             }
             
             if (!comercio.getUsuario().equals(nombreUsuario)) {
+                LOG.info("[COMERCIO][ApiInterceptorCredencialesAdminComercioImpl] El usuario " + nombreUsuario + " ha intentado acceder al Comercio " + comercio.getId());
+
                 return Response
                 .serverError()
                 .entity("{\"error\": \"El comercio no pertenece al usuario\"}")
@@ -53,8 +59,9 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
             return invocationContext.proceed();
 
         } catch (Exception e) {
-            System.err.println("Falla en el interceptor de validación de credenciales del comercio/admin.");
-            System.err.println(e.getMessage());
+            LOG.warning("[COMERCIO][ApiInterceptorCredencialesAdminComercioImpl] Falla en el interceptor de validación de credenciales del comercio/admin.");
+            e.printStackTrace();
+
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error al validar las credenciales del comercio/admin\"}")
