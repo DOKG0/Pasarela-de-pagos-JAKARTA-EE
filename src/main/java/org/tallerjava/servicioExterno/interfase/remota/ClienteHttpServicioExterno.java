@@ -1,6 +1,6 @@
 package org.tallerjava.servicioExterno.interfase.remota;
 
-import org.tallerjava.servicioExterno.datatypes.DTONotificacionTransferencia;
+import org.tallerjava.servicioExterno.datatypes.DTONotificacionTransferenciaServicioExterno;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.client.Client;
@@ -15,7 +15,7 @@ public class ClienteHttpServicioExterno {
     private static final String ENDPOINT_TRANSFERENCIA = "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion";
     private static final String ENDPOINT_COMPRA = "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/notificacion";
 
-    public boolean enviarNotificacion(DTONotificacionTransferencia dto) {
+    public boolean enviarNotificacion(DTONotificacionTransferenciaServicioExterno dto) {
         try {
             Client client = ClientBuilder.newClient();
             Response response = client

@@ -5,7 +5,6 @@ import org.tallerjava.moduloTransferencia.dominio.Deposito;
 import org.tallerjava.moduloTransferencia.dominio.Transferencia;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -15,7 +14,6 @@ public interface TransferenciaRepositorio {
     Integer guardarComercio(Comercio comercio);
     boolean actualizarComercio(Comercio comercio);
     Comercio buscarPorId(Integer id);
-    List<Deposito> buscarDepositosPorComercioYFecha(Integer idComercio, LocalDate fechaInicio, LocalDate fechaFin);
     BigDecimal sumaTotalTransferencia();
     BigDecimal sumaTotalNetoDeposito();
     List<Deposito> traerDepositos();

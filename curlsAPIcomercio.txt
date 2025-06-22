@@ -1,17 +1,22 @@
 ## ALTA COMERCIO
 
+
 ### 200 OK
+
 >	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 222", "usuario": "otrocomercio" ,"nombre":"otro comercio", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "223344"}'
 
 
 ### 400 Bad Request
+
 // password faltante
 >	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "nroCuentaBanco": "112233"}'
+
 // nroCuentaBanco faltante
 >	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 222", "usuario": "otrocomercio" ,"nombre":"otro comercio", "rut": "432151234513212", "password": "1234"}'
 
 
 ### 500 Server Error
+
 // nombre de usuario repetido
 >	curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/alta -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111", "usuario": "nextriguser" ,"nombre":"NextRig", "rut": "432151234513212", "password": "1234", "nroCuentaBanco": "112233"}'
 
@@ -19,109 +24,171 @@
 
 ## MODIFICACION COMERCIO
 
+
 ### 200 OK
+
 // actualizo solo el rut pero mando los demas campos igual
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": "88998899889912"}'
+
 // actualizo solo la direccion, envio solo ese campo
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
+
 // el campo no se actualiza si se envia null
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"18 de Julio 111","nombre":"NextRig", "rut": null}'
 
 
 ### 403 Forbidden
+
 // envio credenciales incorrectas, espero un 403 Forbidden
 >	curl -v --user nextriguser:1432 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
+
 // envio credenciales correctas pero intento modificar otro comercio
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
 
 
 ### 404 Not Found
+
 // envio un id de comercio inexistente
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/999/modificacion -H "Content-Type: application/json" -d '{"direccion":"25 de Mayo 111"}'
 
 
+
 ## ALTA POS
 
+
 ### 200 OK
+
+//se crea un nuevo pos para el comercio 1
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos3"}'
+
+//se crea un nuevo pos para el comercio 2
 >	curl -v  --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
+
 ### 400 Bad Request
+
 // falta de datos requeridos
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{}'
 
+
 ### 403 Forbidden
+
 // falta de credenciales validas
 >	curl -v  --user nextriguser:1111 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+
 // intentando acceder a un comercio ajeno
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
+
 ### 404 Not Found
+
 // envio un id de comercio inexistente
 >	curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/999/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
 
+
 ### 500 Internal Server Error
-// identificador de pos repetido
+
+// no se permite dar de alta un pos con identificador repetido
 >   curl -v  --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/alta -H "Content-Type: application/json" -d '{ "identificador":"pos1"}'
+
+
+
 
 ## MODIFICACION DE ESTADO DE POS
 
+
 ### 204 No Content
+
+//se actualiza el estado de un pos con las credenciales del comercio al cual le pertenece
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+
 // permito que un admin modifique el estado aparte del comercio que es dueño
 >	curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "true"}'
 
+
 ### 403 Forbidden
+
 // envio credenciales invalidas
 >	curl -v --user nextriguser:1111 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+
 // intento modificar un pos de un comercio ajeno
 >	curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
 
+
 ### 404 Not Found
+
 // envio un id de comercio inexistente
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/999/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
 
+
 ### 500 Server Error
+
 // intento modificar un pos inexistente
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/5/estado -H "Content-Type: application/json" -d '{"estado": "false"}'
+
 
 
 ## CAMBIO DE CONTRASEÑA
 
 ### 204 No Content
+
+//modifico la contraseña del comercio 1 a '9999'
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "9999"}'
+
+//modifico nuevamente la contraseña del comercio 1 a '1234'
 >	curl -v --user nextriguser:9999 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "1234"}'
 
+
 ### 400 Bad Request 
+
 // falta de datos requeridos
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{}'
 
+
 ### 403 Forbidden
+
 // credenciales invalidas
 >	curl -v --user nextriguser:9999 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "1234"}'
+
 // intento modificar los datos de otro comercio
 >	curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/password -H "Content-Type: application/json" -d '{"passwordNueva": "1234"}'
 
+
 ### 404 Not Found
+
 // intento acceder a un comercio inexistente
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/999/password -H "Content-Type: application/json" -d '{"passwordNueva": "1234"}'
 
 
+
 ## REALIZAR RECLAMO
 
+
 ### 204 No Content
+
+//realizo un reclamo de parte del comercio con id 1
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
 
+//realizo un reclamo de parte del comercio con id 2
+>	curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos2"}'
+
+
 ## 400 Bad Request
+
 // falta de datos requeridos
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{}'
 
+
 ## 403 Forbidden
+
 // credenciales invalidas
 >	curl -v --user nextriguser:1111 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
+
 // intento crear reclamo con id de comercio ajeno
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/2/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'
 
+
 ## 404 Not Found
-// mando id de comercio inexistente
+
+// envio id de comercio inexistente
 >	curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/9999/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'

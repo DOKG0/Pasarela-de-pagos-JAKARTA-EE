@@ -13,11 +13,15 @@ import org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors.ApiI
 import org.tallerjava.moduloComercio.infraestructura.seguridad.interceptors.ApiInterceptorCredencialesComercio;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
@@ -36,6 +40,13 @@ import jakarta.ws.rs.core.Response;
 //Swagger
 @Tag(name="API del Módulo Comercio")
 @Server(url="http://localhost:8080/TallerJakartaEEPasarelaPagos/api")
+@SecurityScheme(
+    name = "Basic",
+    type = SecuritySchemeType.HTTP,
+    in = SecuritySchemeIn.HEADER,
+    paramName = "Authorization",
+    scheme = "Basic"
+)
 //Logica
 @ApplicationScoped
 @Path("/comercio")
@@ -69,7 +80,7 @@ public class ComercioAPI {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"Los campos usuario, nroCuentaBanco y password son requeridos.\"}")
-                .status(400)
+                .status(Response.Status.BAD_REQUEST)
                 .build();
         }
 
@@ -84,7 +95,7 @@ public class ComercioAPI {
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error en el alta del comercio\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }
     }
@@ -92,7 +103,8 @@ public class ComercioAPI {
     //Swagger
     @Operation(
         summary="Modificación de datos de un comercio",
-        description="Un comercio puede modificar algunos de sus datos, como el nombre, rut y dirección. Un comercio deberá autenticarse con su nombre de usuario y contraseña para poder modificar sus datos.")
+        description="Un comercio puede modificar algunos de sus datos, como el nombre, rut y dirección. Un comercio deberá autenticarse con su nombre de usuario y contraseña para poder modificar sus datos.",
+        security = @SecurityRequirement(name = "Basic"))
     @ApiResponses(value={
         @ApiResponse(responseCode = "200", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
@@ -128,7 +140,7 @@ public class ComercioAPI {
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error al modificar el comercio\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }
     }
@@ -136,7 +148,8 @@ public class ComercioAPI {
     //Swagger
     @Operation(
         summary="Alta de un POS de un comercio",
-        description="Un comercio puede dar da alta un POS. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.")
+        description="Un comercio puede dar da alta un POS. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.",
+        security = @SecurityRequirement(name = "Basic"))
     @ApiResponses(value={
         @ApiResponse(responseCode = "200", description = "Operación de alta exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
@@ -163,7 +176,7 @@ public class ComercioAPI {
             return Response
                 .serverError()
                 .entity("{\"error\": \"El identificador del pos es un campo requerido\"}")
-                .status(400)
+                .status(Response.Status.BAD_REQUEST)
                 .build();
         }
 
@@ -180,7 +193,7 @@ public class ComercioAPI {
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error en el alta del pos\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }
     }
@@ -188,7 +201,8 @@ public class ComercioAPI {
     //Swagger
     @Operation(
         summary="Modificación del estado de un POS",
-        description="Un comercio puede modificar el estado de un POS, habilitándolo o deshabilitándolo. Para ello es necesario que provea el identificador del comercio y del POS y deberá proveer las credenciales de usuario.")
+        description="Un comercio puede modificar el estado de un POS, habilitándolo o deshabilitándolo. Para ello es necesario que provea el identificador del comercio y del POS y deberá proveer las credenciales de usuario.",
+        security = @SecurityRequirement(name = "Basic"))
     @ApiResponses(value={
         @ApiResponse(responseCode = "204", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
@@ -220,7 +234,7 @@ public class ComercioAPI {
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error al modificar el pos\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }
     }
@@ -228,7 +242,8 @@ public class ComercioAPI {
     //Swagger
     @Operation(
         summary="Cambio de contraseña de un comercio",
-        description="Un comercio puede modificar su contraseña. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.")
+        description="Un comercio puede modificar su contraseña. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.",
+        security = @SecurityRequirement(name = "Basic"))
     @ApiResponses(value={
         @ApiResponse(responseCode = "204", description = "Operación de modificación exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
@@ -255,7 +270,7 @@ public class ComercioAPI {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"La nueva contraseña es un campo requerido\"}")
-                .status(400)
+                .status(Response.Status.BAD_REQUEST)
                 .build();
             }
 
@@ -269,7 +284,7 @@ public class ComercioAPI {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"Error al actualizar la contraseña\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
             }
     }
@@ -277,7 +292,8 @@ public class ComercioAPI {
     //Swagger
     @Operation(
         summary="Ingreso de un nuevo reclamo por un comercio",
-        description="Un comercio puede ingresar un reclamo. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.")
+        description="Un comercio puede ingresar un reclamo. Para ello es necesario que provea el identificador del mismo y deberá proveer las credenciales de usuario.",
+        security = @SecurityRequirement(name = "Basic"))
     @ApiResponses(value={
         @ApiResponse(responseCode = "204", description = "Operación de alta exitosa"),
         @ApiResponse(responseCode = "400", description = "Fallo por falta de datos requeridos"),
@@ -304,7 +320,7 @@ public class ComercioAPI {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"El contenido del reclamo es un dato requerido\"}")
-                .status(400)
+                .status(Response.Status.BAD_REQUEST)
                 .build();
             }
 
@@ -318,7 +334,7 @@ public class ComercioAPI {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"Error al crear el reclamo\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
             }
     }

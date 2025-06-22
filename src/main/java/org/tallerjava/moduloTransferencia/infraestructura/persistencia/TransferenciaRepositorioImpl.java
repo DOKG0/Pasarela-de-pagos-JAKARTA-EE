@@ -1,8 +1,6 @@
 package org.tallerjava.moduloTransferencia.infraestructura.persistencia;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.tallerjava.moduloTransferencia.dominio.Comercio;
@@ -34,7 +32,6 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
                 return merged.getId();
             }
         } catch (Exception e) {
-            // throw new RuntimeException("Error al guardar comercio", e);
             return -1;
         }
     }
@@ -51,7 +48,6 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
                 return merged.getId();
             }
         } catch (Exception e) {
-            // throw new RuntimeException("Error al guardar comercio", e);
             return -1;
         }
     }
@@ -68,7 +64,6 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
                 return merged.getId();
             }
         } catch (Exception e) {
-            // throw new RuntimeException("Error al guardar comercio", e);
             return -1;
         }
     }
@@ -83,7 +78,6 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
             }
             return false;
         } catch (Exception e) {
-            // throw new RuntimeException("Error al actualizar comercio", e);
             return false;
         }
     }
@@ -94,30 +88,8 @@ public class TransferenciaRepositorioImpl implements TransferenciaRepositorio{
         try {
             return em.find(Comercio.class, id);
         } catch (Exception e) {
-            throw new RuntimeException("Error al buscar comercio por ID", e);
+            return null;
         }
-    }
-
-    @Override
-    public List<Deposito> buscarDepositosPorComercioYFecha(Integer idComercio, LocalDate fechaInicio,
-        LocalDate fechaFin) {
-        Comercio comercio = buscarPorId(idComercio);
-        
-        List<Deposito> depositos = comercio.getDepositos();
-        List<Deposito> depositosFiltrados = new ArrayList<>();
-
-        for (Deposito d : depositos) { 
-            LocalDate fechaDeposito = LocalDate.parse(d.getFecha());
-
-            if (
-                (fechaDeposito.isEqual(fechaInicio) || fechaDeposito.isAfter(fechaInicio)) &&
-                (fechaDeposito.isEqual(fechaFin) || fechaDeposito.isBefore(fechaFin)) &&
-                d.getComercioId().equals(idComercio)
-            ) {
-                depositosFiltrados.add(d);
-            }
-        }
-        return depositosFiltrados;
     }
 
     @Override

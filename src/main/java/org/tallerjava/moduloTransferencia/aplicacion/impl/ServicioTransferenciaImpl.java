@@ -2,10 +2,12 @@ package org.tallerjava.moduloTransferencia.aplicacion.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.tallerjava.moduloTransferencia.aplicacion.ServicioTransferencia;
+import org.tallerjava.moduloTransferencia.dominio.Comercio;
 import org.tallerjava.moduloTransferencia.dominio.CuentaBancariaPasarela;
 import org.tallerjava.moduloTransferencia.dominio.Deposito;
 import org.tallerjava.moduloTransferencia.dominio.Transferencia;
@@ -96,8 +98,24 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
     }
 
     public List<Deposito> consultarDepositos(Integer idComercio, LocalDate fechaInicial, LocalDate fechaFin){
-        List<Deposito> depositos = repositorio.buscarDepositosPorComercioYFecha(idComercio, fechaInicial, fechaFin);
-        return depositos;
+
+        Comercio comercio = repositorio.buscarPorId(idComercio);
+        if (comercio == null) {
+            return null;
+        }
+
+        List<Deposito> depositos = comercio.getDepositos();
+        List<Deposito> depositosFiltrados = new ArrayList<>();
+
+        for (Deposito d : depositos) { 
+            LocalDate fechaDeposito = LocalDate.parse(d.getFecha());
+
+            if ((fechaDeposito.isEqual(fechaInicial) || fechaDeposito.isAfter(fechaInicial)) &&
+                (fechaDeposito.isEqual(fechaFin) || fechaDeposito.isBefore(fechaFin))) {
+                depositosFiltrados.add(d);
+            }
+        }
+        return depositosFiltrados;
     }
 
     
