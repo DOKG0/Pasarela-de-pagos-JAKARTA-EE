@@ -38,7 +38,7 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"El comercio no existe\"}")
-                .status(404)
+                .status(Response.Status.NOT_FOUND)
                 .build();
             }
 
@@ -52,7 +52,7 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
                 return Response
                 .serverError()
                 .entity("{\"error\": \"El comercio no pertenece al usuario\"}")
-                .status(403)
+                .status(Response.Status.FORBIDDEN)
                 .build();
             }
 
@@ -65,7 +65,7 @@ public class ApiInterceptorCredencialesAdminComercioImpl {
             return Response
                 .serverError()
                 .entity("{\"error\": \"Error al validar las credenciales del comercio/admin\"}")
-                .status(500)
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }
 

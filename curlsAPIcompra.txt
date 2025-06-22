@@ -1,10 +1,13 @@
 ## NUEVA COMPRA
 
-### PAGO ACEPTADO O RECHAZADO
+
+### PAGO ACEPTADO (200) O RECHAZADO (500)
 >   curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
 
+
 ### 403 Forbidden
-//credenciales incorrectas
+
+//credenciales de comercio incorrectas
 >   curl -v --user nextriguser:1 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
 
 //sin credenciales
@@ -17,11 +20,64 @@
 
 ## RESUMEN DE VENTAS
 
+### 200 OK
+
+// solicito un resumen de ventas del coemrcio 1 en el periodo 2025-05-18 / 2025-12-01
 >   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+
+### 403 Forbidden
+
+// envio credenciales incorrectas
+>   curl -v --user nextriguser:1111 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+// sin credenciales
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+// credenciales de otro comercio
+>   curl -v --user otrocomercio:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+
+### 404 Not Found
+
+//comercio inexistente
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/999/resumen/periodo?fechaInicio=2025-05-18&fechaFin=2025-12-01"
+
+
+### 500 Server Error
+
+//envio fechas en formato invalido
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/periodo?fechaInicio=2025-05-18&fechaFin=20251201"
+
+
 
 
 ## RESUMEN DE VENTAS POR ESTADO
 
+### 200 OK
+
+//solicito un resumen de ventas del comercio con id 1
 >   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=APROBADA"
 >   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
 >   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=PENDIENTE"
+
+
+### 403 Forbidden 
+
+//envio credenciales invalidas
+>   curl -v --user nextriguser:1111 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+
+//envio credenciales vacias
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+
+//envio credenciales de otro comercio
+>   curl -v --user otrocomercio:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=RECHAZADA"
+
+
+### 404 Not Found
+
+//envio un estado invalido
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/resumen/por-estado?estado=OTRO"
+
+//envio un id de comercio inexistente
+>   curl -v --user nextriguser:1234 "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/99/resumen/por-estado?estado=RECHAZADA"

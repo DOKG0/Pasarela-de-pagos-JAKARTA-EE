@@ -1,10 +1,12 @@
-package org.tallerjava.moduloTransferencia.datatypes;
+package org.tallerjava.moduloCompra.dominio.datatypes;
+
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import lombok.Data;
+
 @Data
-public class DTONotificacionTransferencia {
+public class DTOTransferenciaOUT {
 
     @Schema(name = "nroCuentaBancoComercio", example = "12345678", requiredMode = RequiredMode.REQUIRED)
     private String nroCuentaBancoComercio;
@@ -14,8 +16,10 @@ public class DTONotificacionTransferencia {
 
     @Schema(name = "monto", example = "199.99", requiredMode = RequiredMode.REQUIRED)
     private double monto;
-    
+
     @Schema(name = "codigoTransaccion", example = "t512439", requiredMode = RequiredMode.REQUIRED)
     private String codigoTransaccion;
 
+    @Schema(name = "DTOPago", requiredMode = RequiredMode.REQUIRED, implementation = DTOPago.class)
+    private DTOPago dtoPago;
 }

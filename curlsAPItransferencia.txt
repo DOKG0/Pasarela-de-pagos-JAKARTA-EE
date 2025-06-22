@@ -1,0 +1,41 @@
+## NUEVA NOTIFICACION DE TRANSFERENCIA
+
+### 200 OK
+
+//se envia la notificacion de una nueva transferencia realizada al comercio de id 1
+>  curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":1}'
+
+//se envia la notificacion de una nueva transferencia realizada al comercio de id 2
+>  curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":2}'
+
+
+
+
+## CONSULTA DE DEPOSITOS DE COMERCIO
+
+### 200 OK
+
+// se consultan los depositos del comercio 1 entre las fechas 2025-01-01 y 2025-12-31
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
+
+// se consultan los depositos del comercio 2 entre las fechas 2025-01-01 y 2025-12-31
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=2&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
+
+
+### 400 Bad Request
+
+//se envian fechas invalidas
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=20251231"
+
+//se envian parametros faltantes
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01"
+
+
+### 404 Not Found
+//se envia un id de comercio inexistente
+>   curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=999&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
+
+
+### 500 Server Error
+
+
