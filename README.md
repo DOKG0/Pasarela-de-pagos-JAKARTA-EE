@@ -43,6 +43,12 @@ EL sistema esta organizado en una arquitectura de monolito modular
 
 - ***Servicios externos***: Simulan la interaccion con proveedores de procesamiento de pagos
 
+En la siguiente imagen se muestra un diagrama de componentes con las interacciones que existen entre los mismos. Cabe aclarar que no todos los módulos cuentan con todos las clases mencionadas en el diagrama de estructura general. Por ejemplo, el Módulo Monitoreo es el único que tiene un Logger que registra los datos en InfluxDB y el Módulo Seguridad es el único módulo en esta iteración que provee de una interfaz local (ServiceFacade).
+![diagramas-Diagramas de Componentes](https://github.com/user-attachments/assets/a2d3658c-0e08-49e9-832e-194ef5273664)
+
+En la siguiente imagen se muestran los diagramas de clases de las clases de dominio, sin incluir controladores e interfaces. Se destaca la presencia de entidades replicadas en múltiples módulos pero con atributos en algunos casos diferentes. Con este diseño se busca implementar módulos con bajo acoplamiento que sean fácilmente escalables y mantenibles, sacrificando cierto grado de duplicación de código y aumentando la complejidad.
+![diagramas-Clases de Dominio](https://github.com/user-attachments/assets/94dfa458-92e4-452a-ac97-b9b80cf8267f)
+
 #### 2. Tecnologias utilizadas
 
 - Jakarta EE 10: Framework principal para el desarrollo de la aplicacion
