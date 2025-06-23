@@ -2,7 +2,6 @@ package org.tallerjava.moduloCompra.infraestructura.persistencia;
 
 import org.tallerjava.moduloCompra.dominio.CuentaBancoComercio;
 import org.jboss.logging.Logger;
-import org.tallerjava.moduloCompra.aplicacion.impl.ServicioCompraImpl;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
@@ -10,7 +9,6 @@ import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 

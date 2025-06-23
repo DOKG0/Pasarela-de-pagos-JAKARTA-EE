@@ -38,6 +38,8 @@ public class ClienteHttpCompra {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(dataTransferencia, MediaType.APPLICATION_JSON));
 
+            client.close();
+            
             if (response.getStatus() == 200) {
                 return response.readEntity(Boolean.class); 
             }
