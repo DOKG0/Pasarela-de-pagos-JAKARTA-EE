@@ -92,7 +92,7 @@ public class CompraAPI {
         LOG.info("[Compra] Resultado booleano del Servicio Externo: " + resultado);
 
         //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
-        boolean nuevaCompraRegistrada = servicioCompra.nuevaCompra(
+        boolean nuevaCompraRegistrada = servicioCompra.ingresarNuevaCompra(
             datosCompra.getIdComercio(), 
             datosCompra.getMonto(), 
             resultado, 

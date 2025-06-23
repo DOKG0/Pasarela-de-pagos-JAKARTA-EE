@@ -27,7 +27,7 @@ public class ServicioCompraImpl implements ServicioCompra{
     private PublicadorEvento publicador;
 
     @Override
-    public boolean nuevaCompra(Integer idComercio, double importe, boolean resultado, Integer idPos) {
+    public boolean ingresarNuevaCompra(Integer idComercio, double importe, boolean resultado, Integer idPos) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
         
