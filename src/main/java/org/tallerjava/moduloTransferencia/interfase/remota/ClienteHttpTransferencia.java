@@ -13,7 +13,7 @@ public class ClienteHttpTransferencia {
         try {
             String soapEndpointUrl = "http://localhost:8080/TallerJakartaEEPasarelaPagos/NotificacionBancoService";
             String soapBody = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://soap.ws.interfase.moduloComercio.tallerjava.org/\">"
+                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ws=\"http://ws.soap.remota.interfase.servicioExterno.tallerjava.org/\">"
                     +
                     "   <soapenv:Header/>" +
                     "   <soapenv:Body>" +

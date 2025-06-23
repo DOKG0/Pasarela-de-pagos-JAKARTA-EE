@@ -1,4 +1,4 @@
-package org.tallerjava.servicioExterno.interfase.remota;
+package org.tallerjava.servicioExterno.interfase.remota.rest;
 
 import java.util.logging.Logger;
 
@@ -30,9 +30,6 @@ public class ServicioExternoAPI {
     private static final Logger LOG = Logger.getLogger(ServicioExternoAPI.class.getName());
 
     @Inject
-    ClienteHttpServicioExterno clienteHttpTransferencia; // Cliente REST
-
-    @Inject
     ServicioExternoMedioDePago servicioExterno;
 
     //Swagger
@@ -51,7 +48,7 @@ public class ServicioExternoAPI {
     public Response notificarTransferencia(DTONotificacionTransferenciaServicioExterno dto) {
         LOG.info("[ServicioExterno] El servicio externo recibió los datos de pago:\n" + dto.toString());
 
-        boolean resultado = servicioExterno.procesarPago(dto.getNroCuentaBancoComercio(), dto.getMonto(), dto.getIdComercio());
+        boolean resultado = servicioExterno.procesarPago();
 
         LOG.info("[ServicioExterno] Resultado booleano del servicioExterno: " + resultado);
 

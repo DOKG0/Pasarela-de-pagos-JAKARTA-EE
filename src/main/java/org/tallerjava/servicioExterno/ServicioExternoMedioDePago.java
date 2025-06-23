@@ -5,9 +5,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ServicioExternoMedioDePago {
 
-    public boolean procesarPago(String nroCuentaBancoComercio, double importe, Integer idComercio) {
+    public boolean procesarPago() {
 
-        boolean resultado = ( (int) (Math.random() * 11) < 7);
+        boolean resultado = ( (int) (Math.random() * 11) < 8);
         
         return resultado;
     }

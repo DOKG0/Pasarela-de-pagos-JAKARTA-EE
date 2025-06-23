@@ -29,7 +29,6 @@ public class ClienteHttpCompra {
             dataTransferencia.setIdComercio(dto.getIdComercio());
             dataTransferencia.setNroCuentaBancoComercio(dto.getNroCuentaBancoComercio());
             dataTransferencia.setMonto(dto.getMonto());
-            dataTransferencia.setCodigoTransaccion("");
 
             LOG.info("[COMPRA][ClienteHttpCompra] Datos enviados al servicio externo:\n" 
                 + dataTransferencia.toString());
@@ -38,8 +37,6 @@ public class ClienteHttpCompra {
                 .target(ENDPOINT_SERVICIO_EXTERNO)
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(dataTransferencia, MediaType.APPLICATION_JSON));
-
-            System.out.println(response.toString());
 
             if (response.getStatus() == 200) {
                 return response.readEntity(Boolean.class); 

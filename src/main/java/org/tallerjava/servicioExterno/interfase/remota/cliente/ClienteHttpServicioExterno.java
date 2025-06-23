@@ -1,4 +1,4 @@
-package org.tallerjava.servicioExterno.interfase.remota;
+package org.tallerjava.servicioExterno.interfase.remota.cliente;
 
 import org.tallerjava.servicioExterno.datatypes.DTONotificacionTransferenciaServicioExterno;
 
