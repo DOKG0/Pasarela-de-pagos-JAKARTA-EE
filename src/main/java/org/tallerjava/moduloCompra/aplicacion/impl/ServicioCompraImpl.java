@@ -3,8 +3,6 @@ package org.tallerjava.moduloCompra.aplicacion.impl;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
-import javax.management.RuntimeErrorException;
-
 import org.tallerjava.moduloCompra.interfase.evento.out.PublicadorEvento;
 import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
 import org.tallerjava.moduloCompra.dominio.Comercio;
@@ -29,7 +27,7 @@ public class ServicioCompraImpl implements ServicioCompra{
     private PublicadorEvento publicador;
 
     @Override
-    public boolean procesarPago(Integer idComercio, double importe, boolean resultado, Integer idPos) {
+    public boolean ingresarNuevaCompra(Integer idComercio, double importe, boolean resultado, Integer idPos) {
         Comercio comercio = repositorio.buscarPorId(idComercio);
         if (comercio == null) return false;
         
@@ -39,13 +37,6 @@ public class ServicioCompraImpl implements ServicioCompra{
 
         Compra nuevaCompra = new Compra(importe);
         comercio.agregarCompra(nuevaCompra);
-        
-        if (comercio.getCompras().contains(nuevaCompra)) {
-            LOG.info("[ServicioCompra] Compra registrada en comercio");
-        } else {
-            LOG.warning("[ServicioCompra] Error al registrar la compra en el comercio");
-            throw new RuntimeErrorException(null, "Error al registrar la compra en el comercio");
-        }
 
         if (resultado) {
             nuevaCompra.setEstado(EstadoCompra.APROBADA);
@@ -56,14 +47,20 @@ public class ServicioCompraImpl implements ServicioCompra{
             LOG.info("[ServicioCompra] Compra Rechazada");
         }
 
-        repositorio.actualizarComercio(comercio);
-        publicador.publicarEventoPago(idComercio, repositorio.traerIdCompra(idComercio), nuevaCompra.getEstado());
+        boolean actualizacionExitosa = repositorio.actualizarComercio(comercio);
 
-        if(!resultado){
-            publicador.publicarEventoPagoError(idComercio, repositorio.traerIdCompra(idComercio), nuevaCompra.getEstado());
+        if (actualizacionExitosa) {
+            publicador.publicarEventoPago(idComercio, repositorio.traerIdCompra(idComercio), nuevaCompra.getEstado());
+
+            if(!resultado){
+                publicador.publicarEventoPagoError(
+                    idComercio, 
+                    repositorio.traerIdCompra(idComercio), 
+                    nuevaCompra.getEstado());
+            }
         }
-
-        return resultado;
+        
+        return actualizacionExitosa;
     }
 
     @Override

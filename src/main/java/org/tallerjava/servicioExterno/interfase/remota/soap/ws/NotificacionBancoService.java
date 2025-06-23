@@ -1,4 +1,4 @@
-package org.tallerjava.moduloComercio.interfase.ws.soap;
+package org.tallerjava.servicioExterno.interfase.remota.soap.ws;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -11,8 +11,9 @@ public class NotificacionBancoService {
     public String notificarSaldoEntrante(
         @WebParam(name = "numeroCuenta") String numeroCuenta,
         @WebParam(name = "monto") double monto,
-        @WebParam(name = "codigoTransaccion") String codigoTransaccion
-    ){
+        @WebParam(name = "codigoTransaccion") String codigoTransaccion) {
+
+        System.out.println("[NotificacionBancoService] Saldo entrante notificado");
         return "ok";
     }
 }

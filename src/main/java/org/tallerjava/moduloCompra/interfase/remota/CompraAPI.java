@@ -69,7 +69,6 @@ public class CompraAPI {
     @ApiResponses(value={
         @ApiResponse(responseCode = "200", description = "El pago fue aceptado"),
         @ApiResponse(responseCode = "403", description = "Fallo por falta de credenciales o credenciales incorrectas"),
-        @ApiResponse(responseCode = "404", description = "El comercio con el id provisionado no existe"),
         @ApiResponse(responseCode = "500", description = "El pago fue rechazado")})
     @RequestBody(
         description = "Estructura del request",
@@ -88,19 +87,25 @@ public class CompraAPI {
         DTOTransferencia datosCompra) {  
             
         // El httpClient envia la solicitud al servicio externo, el servicio devuelve true or false segun el calculo.
-        boolean resultado = httpClient.enviarSolicitudPago(
-            datosCompra
-        );
+        boolean resultado = httpClient.enviarSolicitudPago(datosCompra);
 
         LOG.info("[Compra] Resultado booleano del Servicio Externo: " + resultado);
 
         //Se hace la logica interna del modulo y se le pasa el valor del servicio externo asi prevee que hacer con la compra creada
-        servicioCompra.procesarPago(
+        boolean nuevaCompraRegistrada = servicioCompra.ingresarNuevaCompra(
             datosCompra.getIdComercio(), 
             datosCompra.getMonto(), 
             resultado, 
             datosCompra.getIdPos());
         
+        if (!nuevaCompraRegistrada) {
+            return Response
+                .serverError()
+                .entity("{\"error\": \"El pago fue rechazado por la pasarela de pagos. Verifique los datos del comercio\"}")
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .build();
+        }
+
         if (resultado) {
             return Response
             .ok()
@@ -109,7 +114,7 @@ public class CompraAPI {
         } else {
             return Response
                 .serverError()
-                .entity("{\"error\": \"El pago fue rechazado\"}")
+                .entity("{\"error\": \"El pago fue rechazado por el servicio externo de medio de pago\"}")
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .build();
         }

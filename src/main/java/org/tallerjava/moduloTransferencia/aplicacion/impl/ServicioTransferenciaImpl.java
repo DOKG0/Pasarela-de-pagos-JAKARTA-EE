@@ -69,8 +69,18 @@ public class ServicioTransferenciaImpl implements ServicioTransferencia{
         //Se crea la el deposito y se registra en la pasarela de pagos, a su vez se guarda en la lista de depositos del comercio
         Deposito deposito = new Deposito(idComercio, montoBigDecimal, transferencia.getId());
         cuentaPasarela.registrarDepositoAComercio(deposito, idComercio);
-        clienteHttpTransferencia.notificarBancoSoapHttp(nroCuentaBancoComercio, monto, codigoTransaccion);
+
+        boolean notificacionABancoExitosa = clienteHttpTransferencia.notificarBancoSoapHttp(
+            nroCuentaBancoComercio, 
+            monto, 
+            codigoTransaccion);
         
+        if (notificacionABancoExitosa) {
+            LOG.info("[ServicioTransferencia] El banco fue notificado exitosamente");
+        } else {
+            LOG.warning("[ServicioTransferencia] Ocurrió un error al notificar al banco");
+        }
+
         if (cuentaPasarela.getDepositos().contains(deposito)) {
             LOG.info("[ServicioTransferencia] Deposito registrado en pasarela de pagos");
         } else {
