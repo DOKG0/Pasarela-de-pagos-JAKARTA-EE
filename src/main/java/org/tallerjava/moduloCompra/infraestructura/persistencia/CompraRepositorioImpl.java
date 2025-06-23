@@ -9,6 +9,7 @@ import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -78,9 +79,6 @@ public class CompraRepositorioImpl implements CompraRepositorio {
         try {
             em.merge(comercio);
             return true;
-        } catch (OptimisticLockException ole) {
-            LOG.warn("Conflicto de concurrencia al actualizar comercio con ID: " + comercio.getId());
-            return false;
         } catch (Exception e) {
             LOG.error("Error al actualizar comercio", e);
             return false;
@@ -90,7 +88,7 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     @Override
     public Comercio buscarPorId(Integer id) {
         try {
-            return em.find(Comercio.class, id);
+            return em.find(Comercio.class, id, LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception e) {
             return null;
         }
