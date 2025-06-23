@@ -16,6 +16,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,8 @@ public class Comercio {
     @Column(unique = true)
     private String usuario;
     private double importeVentasDelDia; //to do: implementar un schedule que lo resetee a 0 todos los dias
+    @Version
+    private Integer version;
 
     @OneToMany(
         mappedBy = "comercio",
