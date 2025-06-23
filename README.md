@@ -261,6 +261,10 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
 - Persistencia y visualizacion: Las metricas se almacenan en influxDB y son visualizadas utilizando grafana
 - Se utiliza docker compose para desplegar imagenes de influx db y grafana.
 
+**Visualizacion parcial de graficas generadas con grafana**
+
+![Grafana](https://github.com/user-attachments/assets/42cc4ff1-fb8f-46c6-9eff-f856645c105e)
+
 ---
 
 ### 8. Casos de prueba
