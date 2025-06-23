@@ -1,18 +1,22 @@
 package org.tallerjava.moduloCompra.infraestructura.persistencia;
 
 import org.tallerjava.moduloCompra.dominio.CuentaBancoComercio;
+import org.jboss.logging.Logger;
 import org.tallerjava.moduloCompra.dominio.Comercio;
 import org.tallerjava.moduloCompra.dominio.Compra;
 import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 @Transactional
 public class CompraRepositorioImpl implements CompraRepositorio {
+
+    private static final Logger LOG = Logger.getLogger(CompraRepositorioImpl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -71,14 +75,10 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     @Override
     public boolean actualizarComercio(Comercio comercio) {
         try {
-            Comercio comercioExistente = buscarPorId(comercio.getId());
-            if (comercioExistente != null) {
-                em.merge(comercio);
-                em.flush();
-                return true;
-            }
-            return false;
+            em.merge(comercio);
+            return true;
         } catch (Exception e) {
+            LOG.error("Error al actualizar comercio", e);
             return false;
         }
     }
@@ -87,6 +87,15 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     public Comercio buscarPorId(Integer id) {
         try {
             return em.find(Comercio.class, id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Comercio buscarPorIdConBloqueo(Integer id) {
+        try {
+            return em.find(Comercio.class, id, LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception e) {
             return null;
         }

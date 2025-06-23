@@ -1,0 +1,2 @@
+## apache benchmark para ejecutar 10 hilos concurrentes y enviar 100 peticiones
+ab -T application/json -p nuevaCompraBody.txt -n 100 -c 10 -A nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra

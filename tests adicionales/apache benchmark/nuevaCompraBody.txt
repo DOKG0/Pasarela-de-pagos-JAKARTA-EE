@@ -1,0 +1,1 @@
+{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":100.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"pruebaConcurrencia1","fechaVtoTarjeta":"2025-05-17"}}
