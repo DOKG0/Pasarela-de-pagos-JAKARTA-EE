@@ -10,4 +10,5 @@ public interface CompraRepositorio {
     boolean actualizarComercio(Comercio comercio);
     Comercio buscarPorId(Integer id);
     Integer traerIdCompra(Integer id);
+    Comercio buscarPorIdConBloqueo(Integer id);
 }

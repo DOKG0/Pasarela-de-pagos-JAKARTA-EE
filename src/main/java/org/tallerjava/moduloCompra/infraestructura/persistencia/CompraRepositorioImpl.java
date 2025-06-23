@@ -88,6 +88,15 @@ public class CompraRepositorioImpl implements CompraRepositorio {
     @Override
     public Comercio buscarPorId(Integer id) {
         try {
+            return em.find(Comercio.class, id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Comercio buscarPorIdConBloqueo(Integer id) {
+        try {
             return em.find(Comercio.class, id, LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception e) {
             return null;
