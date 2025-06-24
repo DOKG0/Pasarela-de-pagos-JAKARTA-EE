@@ -3,8 +3,29 @@
 ### Pasos para construir y ejecutar el proyecto
 1. Crear la base de datos con el nombre `tallerJakartaEE` en MYSQL.
 2. Verificar que en la línea 24 del archivo `./config.cli` estén las credenciales correctas para acceder al motor de base de datos.
-Si el usuario no tiene contraseña asignada, dejar el valor del parámetro password vacío
-3. Ejecutar el comando `mvn clean package wildfly:run` o `mvn clean package wildfly:dev`
+Si el usuario no tiene contraseña asignada, dejar el valor del parámetro password vacío.
+4. Ejecutar el comando `mvn clean package wildfly:run` o `mvn clean package wildfly:dev`.
+5. Se requiere tener instalado docker. Dirigirse a la carpeta de docker en el proyecto y ejecutar el comando `docker compose up -d` o `docker start grafana influxdb` si ya se hizo previamente el comando anterior en otra instancia.
+   Acceso a grafana:
+    - http://localhost:3000
+    - id -> admin
+    - pass -> admin
+   
+   Una vez logueados en grafana, en el sidepanel selecciona data sources -> new data sources -> influxDB y en los datos va lo siguiente:
+
+    - Name: InfluxDB
+    - Query languague -> Flux
+    - Http - URL -> http://influxdb:8086
+    - Desactivamos basic auth
+    - InfluxDB Details - Organization -> my-org
+    - InfluxDB Details - Default Bucket -> my-bucket
+
+    save & test
+
+    Nota importante !!!
+
+    Al importar el json de grafana a salir un error en las graficas, esto se soluciona creando un dashboard, vas a edit -> jsonmodel y buscas "uid" y lo copias en el json de grafana del proyecto.
+
 
 El proyecto se inicializa con 3 roles (grupos): comercio, admin, servicioExterno
 También se inicializa con 1 administrador con el rol admin, cuyas credenciales son **apiadmin:1234**
