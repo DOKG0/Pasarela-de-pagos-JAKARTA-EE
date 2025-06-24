@@ -183,6 +183,22 @@ Obtiene un resumen de todas las ventas rechazadas para el comercio especificado.
 
 ---
 
+**Modulo Transferencia API**
+
+1. Realizar transferencia
+```bash
+curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":1}'
+
+```
+Procesa un pago proveniente del Servicio Externo a la pasarela. Se ingresa el dinero al banco de la misma, se deduce el importe por su uso y se envia el importe al Comercio destino.
+
+2. Obtener Resumen de Depositos por Periodo
+```bash
+curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
+```
+Genera un informe de depositos realizados por la pasarela para el comercio especificado dentro del rango de fechas indicado.
+
+
 #### 4. Flujo principal de negocio
 
 ***Proceso de alta de comercio***
