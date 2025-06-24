@@ -301,7 +301,7 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
     ---
 6. Pagos concurrentes
 
-    `Pruebas en apache benchmark`
+    `Ver script de prueba con apache benchmark en el directorio /tests adicionales/apache benchmark`
 
 7. Prueba de RateLimiter
 
@@ -315,7 +315,7 @@ do
     http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo
 done`
 
-    `Pruebas en Jmeter`
+    `Ver planes de prueba de jmeter en el directorio /tests adicionales/jmeter`
 
     ---
 
