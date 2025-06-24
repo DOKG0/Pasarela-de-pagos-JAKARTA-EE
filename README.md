@@ -29,6 +29,16 @@ Ejecutar el servidor e ingresar a http://localhost:8080/TallerJakartaEEPasarelaP
 
 ### Documentacion proyecto
 
+### 0. Descripción
+
+Una pasarela de pagos es una plataforma tecnológica que facilita la autorización y procesamiento de pagos electrónicos. Actúa como intermediario entre un comprador/vendedor y una institución financiera, facilitando las transacciones al permitir el uso de diversos medios de pago de forma sencilla y asegurando que se realicen de forma segura. Este tipo de sistemas necesita comunicarse con múltiples servicios externos, como los medios de pago soportados por la pasarela , los bancos a donde deben dirigirse las transacciones y otros. Para que los comercios puedan interactuar con la pasarela el sistema debe ofrecer un canal de comunicación en la forma de un servidor que acepta y procesa solicitudes.
+
+En este proyecto se busca implementar una versión simplificada de un sistema de pasarela de pagos. Debido a que el foco del proyecto es practicar la creación de una aplicación de tipo empresarial con una arquitectura de monolito modular, el sistema no se comunica con sistemas externos reales y no se implementa el Gestor Web.
+
+A continuación se muestra un diagrama que muestra como nuestro sistema interactúa con otras entidades. El comercio, sea mediante un navegador o mediante el POS se comunica como cliente web con el sistema de la pasarela para poder realizar compras, reclamos, consultar compras y depósitos, etc. Al mismo tiempo, el sistema de la pasarela actúa como cliente consumiendo los servicios de terceros, como los sistemas de los medios de pago, los bancos del cliente y en nuestro caso con una inteligencia artificial instalada localmente junto al servidor. El medio de pago también consume los servicios de la pasarela de pago al momento de notificar las transferencias realizadas.
+
+![diagramas-Page-4](https://github.com/user-attachments/assets/6d5bce5a-186f-4e85-81be-5ef4bdfe2e17)
+
 #### 1. Arquitectura general
 
 EL sistema esta organizado en una arquitectura de monolito modular
