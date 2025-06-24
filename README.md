@@ -6,6 +6,7 @@
 Si el usuario no tiene contraseña asignada, dejar el valor del parámetro password vacío.
 4. Ejecutar el comando `mvn clean package wildfly:run` o `mvn clean package wildfly:dev`.
 5. Se requiere tener instalado docker. Dirigirse a la carpeta de docker en el proyecto y ejecutar el comando `docker compose up -d` o `docker start grafana influxdb` si ya se hizo previamente el comando anterior en otra instancia.
+
    Acceso a grafana:
     - http://localhost:3000
     - id -> admin
