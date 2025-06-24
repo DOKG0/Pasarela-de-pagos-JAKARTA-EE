@@ -29,6 +29,16 @@ Ejecutar el servidor e ingresar a http://localhost:8080/TallerJakartaEEPasarelaP
 
 ### Documentacion proyecto
 
+### 0. Descripción
+
+Una pasarela de pagos es una plataforma tecnológica que facilita la autorización y procesamiento de pagos electrónicos. Actúa como intermediario entre un comprador/vendedor y una institución financiera, facilitando las transacciones al permitir el uso de diversos medios de pago de forma sencilla y asegurando que se realicen de forma segura. Este tipo de sistemas necesita comunicarse con múltiples servicios externos, como los medios de pago soportados por la pasarela, los bancos a donde deben dirigirse las transacciones y otros. Para que los comercios puedan interactuar con la pasarela el sistema debe ofrecer un canal de comunicación en la forma de un servidor que acepta y procesa solicitudes.
+
+En este proyecto se busca implementar una versión simplificada de un sistema de pasarela de pagos. Debido a que el foco del proyecto es practicar la creación de una aplicación de tipo empresarial, aplicando estándares de Jakarta para diseñar un sistema escalable con una arquitectura de monolito modular, el sistema no se comunica con sistemas externos reales. En cambio se crean mocks de dichos servicios. Debido al alcance del proyecto, en este caso tampoco se implementa un FrontEnd.
+
+A continuación se muestra un diagrama que muestra como nuestro sistema interactúa con otras entidades. El comercio, sea mediante un navegador web o mediante el POS se comunica como cliente web con el sistema de la pasarela para poder registrarse, realizar compras, reclamos, consultar compras y depósitos, etc. Al mismo tiempo, el sistema de la pasarela actúa como cliente consumiendo los servicios de terceros, como los sistemas de los medios de pago, los bancos del cliente y en nuestro caso con una inteligencia artificial instalada localmente junto al servidor para el procesamiento de reclamos. El medio de pago también es cliente de nuestra plataforma y consume los servicios de la pasarela de pago al momento de notificar las transferencias realizadas.
+
+![diagramas-Page-4](https://github.com/user-attachments/assets/6d5bce5a-186f-4e85-81be-5ef4bdfe2e17)
+
 #### 1. Arquitectura general
 
 EL sistema esta organizado en una arquitectura de monolito modular
@@ -300,7 +310,9 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
     ---
 3. Realizar pago con POS no habilitado:
 
-    `curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "true"}'`
+    `curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'`
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
 
     ---
 4. Realizar pago con credenciales incorrectas
@@ -315,6 +327,7 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
     ---
 6. Pagos concurrentes
 
+    Ver script de prueba con apache benchmark en el directorio `/tests adicionales/apache benchmark`
 
 7. Prueba de RateLimiter
 
@@ -328,8 +341,23 @@ do
     http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo
 done`
 
+    Ver planes de prueba de jmeter en el directorio `/tests adicionales/jmeter`
+
     ---
-8. Un comercio realizar un reclamo
+
+8. Transferencia de dinero desde Medio de Pago
+
+    `curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":1}'`
+
+    ---
+
+9. Listado de ventas diarias
+
+    `curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"`
+
+    ---
+
+10. Un comercio realizar un reclamo
 
     `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'`
 

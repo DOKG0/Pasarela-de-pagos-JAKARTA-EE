@@ -3,6 +3,7 @@ package org.tallerjava.moduloMonitoreo.interfase;
 import java.util.logging.Logger;
 
 import org.tallerjava.moduloComercio.interfase.evento.out.EventoReclamoComercio;
+import org.tallerjava.moduloComercio.interfase.evento.out.EventoReclamoNegativo;
 import org.tallerjava.moduloCompra.interfase.evento.out.EventoPago;
 import org.tallerjava.moduloCompra.interfase.evento.out.EventoPagoError;
 import org.tallerjava.moduloMonitoreo.infraestructura.RegistroMetricasConfig;
@@ -29,6 +30,11 @@ public class ObserverMonitoreo {
         LOG.info("[Monitoreo] Reclamo realizado por Comercio  - ID: " + evento.getIdComercio() 
                 + ", Reclamo - ID: " + evento.getIdReclamo());
                 metricas.getRegistry().counter("reclamos_comercio_total").increment();
+    }
+
+    //Observador para cuando se categoriza un Reclamo como Negativo
+    public void onReclamoNegativo(@Observes EventoReclamoNegativo evento){
+        metricas.getRegistry().counter("reclamos_negativos").increment();
     }
 
 

@@ -1,163 +1,233 @@
-// package org.tallerjava.moduloCompra;
+package org.tallerjava.moduloCompra;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.*;
-// import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
-// import org.tallerjava.moduloCompra.dominio.EstadoCompra;
-// import org.tallerjava.moduloCompra.dominio.Tarjeta;
-// import org.tallerjava.moduloCompra.dominio.datatypes.DTOPago;
-// import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
-// import org.tallerjava.moduloCompra.interfase.remota.CompraAPI;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
+import org.tallerjava.moduloCompra.aplicacion.ServicioCompra;
+import org.tallerjava.moduloCompra.dominio.EstadoCompra;
+import org.tallerjava.moduloCompra.dominio.datatypes.DTOResumenVentas;
+import org.tallerjava.moduloCompra.dominio.datatypes.DTOTransferencia;
+import org.tallerjava.moduloCompra.interfase.remota.ClienteHttpCompra;
+import org.tallerjava.moduloCompra.interfase.remota.CompraAPI;
 
-// import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.ArgumentMatchers.anyDouble;
-// import static org.mockito.ArgumentMatchers.anyInt;
-// import static org.mockito.ArgumentMatchers.eq;
-// import static org.mockito.Mockito.*;
 
-// import java.time.LocalDate;
-// import java.time.LocalDateTime;
-
-// public class CompraApiTest {
+public class CompraApiTest {
     
-//     @InjectMocks
-//     private CompraAPI compraAPI;
+    @InjectMocks
+    private CompraAPI compraAPI;
 
-//     @Mock
-//     private ServicioCompra servicioCompra;
+    @Mock
+    private ServicioCompra servicioCompra;
 
-//     @BeforeEach
-//     void setUp() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @Mock
+    private ClienteHttpCompra httpClient;
 
-//     // Tests para procesarPago
+    @Mock
+    private SecurityContext securityContext;
 
-//     //Verifica que la API procese un pago valido
-//     @Test
-//     void testProcesarPago_exito() {
-//         DTOPago dtoPago = mock(DTOPago.class);
-//         when(dtoPago.getFechaVtoTarjeta()).thenReturn("2025-05-17");
-//         when(dtoPago.getNroTarjeta()).thenReturn(123);
-//         when(dtoPago.getMarcaTarjeta()).thenReturn("visa");
-//         when(dtoPago.getImporte()).thenReturn(10000.0);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-//         when(servicioCompra.procesarPago(anyInt(), anyDouble(), any(Tarjeta.class))).thenReturn(true);
+    // Tests para procesarPago
 
-//         Response response = compraAPI.procesarPago(1, dtoPago);
-
-//         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-//         verify(servicioCompra).procesarPago(eq(1), eq(10000.0), any(Tarjeta.class));
-//     }
-
-//     //Confirma que la API maneja un pago rechazado
-//     @Test
-//     void testProcesarPago_rechazado() {
-//         DTOPago dtoPago = mock(DTOPago.class);
-//         when(dtoPago.getFechaVtoTarjeta()).thenReturn("2025-05-17");
-//         when(dtoPago.getNroTarjeta()).thenReturn(123);
-//         when(dtoPago.getMarcaTarjeta()).thenReturn("visa");
-//         when(dtoPago.getImporte()).thenReturn(10000.0);
-
-//         when(servicioCompra.procesarPago(anyInt(), anyDouble(), any(Tarjeta.class))).thenReturn(false);
-
-//         Response response = compraAPI.procesarPago(1, dtoPago);
-
-//         assertEquals(500, response.getStatus());
-//         assertTrue(response.getEntity().toString().contains("El pago fue rechazado"));
-//     }
-
-//     //Prueba que la API detecte errores en el formato de fecha de la tarjeta.
-//     @Test
-//     void testProcesarPago_fechaInvalida() {
-//         DTOPago dtoPago = mock(DTOPago.class);
-//         when(dtoPago.getFechaVtoTarjeta()).thenReturn("fecha-invalida");
-
-//         Response response = compraAPI.procesarPago(1, dtoPago);
-
-//         assertEquals(500, response.getStatus());
-//         assertTrue(response.getEntity().toString().contains("Fecha de vencimiento de tarjeta invalida"));
-//         verify(servicioCompra, never()).procesarPago(anyInt(), anyDouble(), any(Tarjeta.class));
-//     }
-
-//     // Tests para obtenerResumenDeVentasPorPeriodo
-//     //Verifica un resumen de ventas por periodo
-//     @Test
-//     void testObtenerResumenDeVentasPorPeriodo_exito() {
-//         String fechaInicioStr = "2025-05-18";
-//         String fechaFinStr = "2025-05-19";
-//         LocalDateTime fechaInicio = LocalDate.parse(fechaInicioStr).atStartOfDay();
-//         LocalDateTime fechaFin = LocalDate.parse(fechaFinStr).atTime(23,59,59);
+    @Test
+    void testProcesarPago_exito_pagoAceptado() {
+        DTOTransferencia datosCompra = mock(DTOTransferencia.class);
+        when(datosCompra.getIdComercio()).thenReturn(1);
+        when(datosCompra.getMonto()).thenReturn(10000.0);
+        when(datosCompra.getIdPos()).thenReturn(123);
         
-//         DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
-//         when(servicioCompra.resumenVentasPorPeriodo(anyInt(), any(LocalDateTime.class), any(LocalDateTime.class)))
-//             .thenReturn(resumenMock);
+        when(httpClient.enviarSolicitudPago(datosCompra)).thenReturn(true);
+        when(servicioCompra.ingresarNuevaCompra(1, 10000.0, true, 123)).thenReturn(true);
 
-//         Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, fechaInicioStr, fechaFinStr);
+        Response response = compraAPI.procesarPago(1, securityContext, datosCompra);
 
-//         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-//         assertEquals(resumenMock, response.getEntity());
-//         verify(servicioCompra).resumenVentasPorPeriodo(eq(1), eq(fechaInicio), eq(fechaFin));
-//     }
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertTrue(response.getEntity().toString().contains("El pago fue aceptado"));
+        verify(httpClient).enviarSolicitudPago(datosCompra);
+        verify(servicioCompra).ingresarNuevaCompra(1, 10000.0, true, 123);
+    }
 
-//     //Prueba el manejo de errores cuando el servicio no puede generar un resumen
-//     @Test
-//     void testObtenerResumenDeVentasPorPeriodo_errorResumen() {
-//         String fechaInicioStr = "2025-05-18";
-//         String fechaFinStr = "2025-05-19";
+    @Test
+    void testProcesarPago_servicioExterno_rechaza_pero_compra_registrada() {
+        DTOTransferencia datosCompra = mock(DTOTransferencia.class);
+        when(datosCompra.getIdComercio()).thenReturn(1);
+        when(datosCompra.getMonto()).thenReturn(5000.0);
+        when(datosCompra.getIdPos()).thenReturn(456);
         
-//         when(servicioCompra.resumenVentasPorPeriodo(anyInt(), any(LocalDateTime.class), any(LocalDateTime.class)))
-//             .thenReturn(null);
+        when(httpClient.enviarSolicitudPago(datosCompra)).thenReturn(false);
+        when(servicioCompra.ingresarNuevaCompra(1, 5000.0, false, 456)).thenReturn(true);
 
-//         Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, fechaInicioStr, fechaFinStr);
+        Response response = compraAPI.procesarPago(1, securityContext, datosCompra);
 
-//         assertEquals(500, response.getStatus());
-//         assertTrue(response.getEntity().toString().contains("Error al generar el resumen"));
-//     }
+        assertEquals(500, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("El pago fue rechazado por el servicio externo"));
+        verify(httpClient).enviarSolicitudPago(datosCompra);
+        verify(servicioCompra).ingresarNuevaCompra(1, 5000.0, false, 456);
+    }
 
-//     //Confirma que la API detecta fechas en formato incorrecto.
-//     @Test
-//     void testObtenerResumenDeVentasPorPeriodo_fechasInvalidas() {
-//         String fechaInicioStr = "fecha-invalida";
-//         String fechaFinStr = "fecha-invalida";
+    @Test
+    void testProcesarPago_falloRegistroCompra() {
+        DTOTransferencia datosCompra = mock(DTOTransferencia.class);
+        when(datosCompra.getIdComercio()).thenReturn(1);
+        when(datosCompra.getMonto()).thenReturn(15000.0);
+        when(datosCompra.getIdPos()).thenReturn(789);
+        
+        when(httpClient.enviarSolicitudPago(datosCompra)).thenReturn(true);
+        when(servicioCompra.ingresarNuevaCompra(1, 15000.0, true, 789)).thenReturn(false);
 
-//         Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, fechaInicioStr, fechaFinStr);
+        Response response = compraAPI.procesarPago(1, securityContext, datosCompra);
 
-//         assertEquals(500, response.getStatus());
-//         assertTrue(response.getEntity().toString().contains("Error al procesar los parametros"));
-//         verify(servicioCompra, never()).resumenVentasPorPeriodo(anyInt(), any(), any());
-//     }
+        assertEquals(500, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("El pago fue rechazado por la pasarela de pagos"));
+        verify(httpClient).enviarSolicitudPago(datosCompra);
+        verify(servicioCompra).ingresarNuevaCompra(1, 15000.0, true, 789);
+    }
 
-//     // Tests para obtenerResumenDeVentasDiario
-//     //Verifica que la API devuelva un resumen por estado.
-//     @Test
-//     void testObtenerResumenDeVentasDiario_exito() {
-//         EstadoCompra estado = EstadoCompra.APROBADA;
-//         DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
-//         when(servicioCompra.resumenVentasPorEstado(anyInt(), any(EstadoCompra.class)))
-//             .thenReturn(resumenMock);
+    // Tests para obtenerResumenDeVentasPorPeriodo
 
-//         Response response = compraAPI.obtenerResumenDeVentasDiario(1, estado);
+    @Test
+    void testObtenerResumenDeVentasPorPeriodo_exito() {
+        String fechaInicioStr = "2025-05-18";
+        String fechaFinStr = "2025-05-19";
+        LocalDateTime fechaInicio = LocalDate.parse(fechaInicioStr).atStartOfDay();
+        LocalDateTime fechaFin = LocalDate.parse(fechaFinStr).atTime(23, 59, 59);
+        
+        DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
+        when(servicioCompra.resumenVentasPorPeriodo(1, fechaInicio, fechaFin)).thenReturn(resumenMock);
 
-//         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-//         assertEquals(resumenMock, response.getEntity());
-//         verify(servicioCompra).resumenVentasPorEstado(eq(1), eq(estado));
-//     }
-    
-//     //Prueba el manejo de errores cuando no se puede generar un resumen por estado.
-//     @Test
-//     void testObtenerResumenDeVentasDiario_errorResumen() {
-//         EstadoCompra estado = EstadoCompra.RECHAZADA;
-//         when(servicioCompra.resumenVentasPorEstado(anyInt(), any(EstadoCompra.class)))
-//             .thenReturn(null);
+        Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, securityContext, fechaInicioStr, fechaFinStr);
 
-//         Response response = compraAPI.obtenerResumenDeVentasDiario(1, estado);
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(resumenMock, response.getEntity());
+        verify(servicioCompra).resumenVentasPorPeriodo(1, fechaInicio, fechaFin);
+    }
 
-//         assertEquals(500, response.getStatus());
-//         assertTrue(response.getEntity().toString().contains("Error al generar el resumen"));
-//     }
-// }
+    @Test
+    void testObtenerResumenDeVentasPorPeriodo_errorResumen() {
+        String fechaInicioStr = "2025-05-18";
+        String fechaFinStr = "2025-05-19";
+        LocalDateTime fechaInicio = LocalDate.parse(fechaInicioStr).atStartOfDay();
+        LocalDateTime fechaFin = LocalDate.parse(fechaFinStr).atTime(23, 59, 59);
+        
+        when(servicioCompra.resumenVentasPorPeriodo(1, fechaInicio, fechaFin)).thenReturn(null);
+
+        Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, securityContext, fechaInicioStr, fechaFinStr);
+
+        assertEquals(500, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("Error al generar el resumen"));
+        verify(servicioCompra).resumenVentasPorPeriodo(1, fechaInicio, fechaFin);
+    }
+
+    @Test
+    void testObtenerResumenDeVentasPorPeriodo_fechasInvalidas() {
+        String fechaInicioStr = "fecha-invalida";
+        String fechaFinStr = "otra-fecha-invalida";
+
+        Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, securityContext, fechaInicioStr, fechaFinStr);
+
+        assertEquals(400, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("Error al procesar los parametros"));
+        verify(servicioCompra, never()).resumenVentasPorPeriodo(anyInt(), any(), any());
+    }
+
+    @Test
+    void testObtenerResumenDeVentasPorPeriodo_fechaInicioNula() {
+        String fechaInicioStr = null;
+        String fechaFinStr = "2025-05-19";
+
+        Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, securityContext, fechaInicioStr, fechaFinStr);
+
+        assertEquals(400, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("Error al procesar los parametros"));
+        verify(servicioCompra, never()).resumenVentasPorPeriodo(anyInt(), any(), any());
+    }
+
+    @Test
+    void testObtenerResumenDeVentasPorPeriodo_fechaFinNula() {
+        String fechaInicioStr = "2025-05-18";
+        String fechaFinStr = null;
+
+        Response response = compraAPI.obtenerResumenDeVentasPorPeriodo(1, securityContext, fechaInicioStr, fechaFinStr);
+
+        assertEquals(400, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("Error al procesar los parametros"));
+        verify(servicioCompra, never()).resumenVentasPorPeriodo(anyInt(), any(), any());
+    }
+
+    // Tests para obtenerResumenDeVentasDiario
+
+    @Test
+    void testObtenerResumenDeVentasDiario_exito_estadoAprobada() {
+        EstadoCompra estado = EstadoCompra.APROBADA;
+        DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
+        when(servicioCompra.resumenVentasPorEstado(1, estado)).thenReturn(resumenMock);
+
+        Response response = compraAPI.obtenerResumenDeVentasDiario(1, securityContext, estado);
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(resumenMock, response.getEntity());
+        verify(servicioCompra).resumenVentasPorEstado(1, estado);
+    }
+
+    @Test
+    void testObtenerResumenDeVentasDiario_exito_estadoRechazada() {
+        EstadoCompra estado = EstadoCompra.RECHAZADA;
+        DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
+        when(servicioCompra.resumenVentasPorEstado(1, estado)).thenReturn(resumenMock);
+
+        Response response = compraAPI.obtenerResumenDeVentasDiario(1, securityContext, estado);
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(resumenMock, response.getEntity());
+        verify(servicioCompra).resumenVentasPorEstado(1, estado);
+    }
+
+    @Test
+    void testObtenerResumenDeVentasDiario_exito_estadoPendiente() {
+        EstadoCompra estado = EstadoCompra.PENDIENTE;
+        DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
+        when(servicioCompra.resumenVentasPorEstado(1, estado)).thenReturn(resumenMock);
+
+        Response response = compraAPI.obtenerResumenDeVentasDiario(1, securityContext, estado);
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(resumenMock, response.getEntity());
+        verify(servicioCompra).resumenVentasPorEstado(1, estado);
+    }
+
+    @Test
+    void testObtenerResumenDeVentasDiario_errorResumen() {
+        EstadoCompra estado = EstadoCompra.RECHAZADA;
+        when(servicioCompra.resumenVentasPorEstado(1, estado)).thenReturn(null);
+
+        Response response = compraAPI.obtenerResumenDeVentasDiario(1, securityContext, estado);
+
+        assertEquals(500, response.getStatus());
+        assertTrue(response.getEntity().toString().contains("Error al generar el resumen"));
+        verify(servicioCompra).resumenVentasPorEstado(1, estado);
+    }
+
+    @Test
+    void testObtenerResumenDeVentasDiario_estadoNulo() {
+        EstadoCompra estado = null;
+        DTOResumenVentas resumenMock = mock(DTOResumenVentas.class);
+        when(servicioCompra.resumenVentasPorEstado(1, estado)).thenReturn(resumenMock);
+
+        Response response = compraAPI.obtenerResumenDeVentasDiario(1, securityContext, estado);
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(resumenMock, response.getEntity());
+        verify(servicioCompra).resumenVentasPorEstado(1, estado);
+    }
+}

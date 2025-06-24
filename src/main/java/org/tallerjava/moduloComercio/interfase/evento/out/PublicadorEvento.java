@@ -14,6 +14,9 @@ public class PublicadorEvento {
     private Event<EventoReclamoComercio> eventoReclamoComercio;
 
     @Inject
+    private Event<EventoReclamoNegativo> eventoReclamoNegativo;
+
+    @Inject
     private Event<EventoAltaPos> eventoAltaPos;
 
     @Inject 
@@ -32,6 +35,12 @@ public class PublicadorEvento {
     public void publicarEventoReclamoComercio(Integer idComercio, Integer idReclamo) {
         EventoReclamoComercio evento = new EventoReclamoComercio(idComercio, idReclamo);
         eventoReclamoComercio.fire(evento);
+    }
+
+    //Publico el evento de que un reclamo fue categorizado como negativo
+    public void publicarEventoReclamoNegativo(){
+        EventoReclamoNegativo evento = new EventoReclamoNegativo();
+        eventoReclamoNegativo.fire(evento);
     }
 
     public void publicarEventoAltaPos(Integer idPos, String identificadorPos, boolean estadoPos, Integer idComercio) {

@@ -14,6 +14,7 @@ import org.tallerjava.moduloCompra.dominio.repo.CompraRepositorio;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class ServicioCompraImpl implements ServicioCompra{
@@ -27,8 +28,9 @@ public class ServicioCompraImpl implements ServicioCompra{
     private PublicadorEvento publicador;
 
     @Override
+    @Transactional
     public boolean ingresarNuevaCompra(Integer idComercio, double importe, boolean resultado, Integer idPos) {
-        Comercio comercio = repositorio.buscarPorId(idComercio);
+        Comercio comercio = repositorio.buscarPorIdConBloqueo(idComercio);
         if (comercio == null) return false;
         
         Pos pos = comercio.buscarPosPorId(idPos);
@@ -59,6 +61,7 @@ public class ServicioCompraImpl implements ServicioCompra{
                     nuevaCompra.getEstado());
             }
         }
+        
         
         return actualizacionExitosa;
     }

@@ -172,6 +172,12 @@ public class ServicioComercioImpl implements ServicioComercio {
         if (reclamo == null) return false;
 
         reclamo.setCategoria(categoriaReclamo);
+        
+        //Si la categoria asignada al Reclamo es NEGATIVO, llamo al publicador del evento de Reclamo negativo
+        if (CategoriaReclamo.NEGATIVO.equals(categoriaReclamo)) {
+            publicador.publicarEventoReclamoNegativo();    
+        }
+        
         return repositorio.actualizarComercio(comercio);
     }
 }
