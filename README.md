@@ -303,6 +303,10 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
 
     ---
 2. Realizar pago error:
+    (Tarjeta no aceptada por el Servicio Externo)
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"oca","fechaVtoTarjeta":"2025-05-17"}}'`
+
     (Credenciales de otro comercio)
 
     `curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
