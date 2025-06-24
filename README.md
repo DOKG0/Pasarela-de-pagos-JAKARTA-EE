@@ -284,7 +284,9 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
     ---
 3. Realizar pago con POS no habilitado:
 
-    `curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "true"}'`
+    `curl -v --user apiadmin:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/pos/1/estado -H "Content-Type: application/json" -d '{"estado": "false"}'`
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
 
     ---
 4. Realizar pago con credenciales incorrectas
@@ -299,6 +301,7 @@ El modulo de monitoreo permite registrar y visualizar metricas del sistema en ti
     ---
 6. Pagos concurrentes
 
+    `Pruebas en apache benchmark`
 
 7. Prueba de RateLimiter
 
@@ -312,8 +315,23 @@ do
     http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo
 done`
 
+    `Pruebas en Jmeter`
+
     ---
-8. Un comercio realizar un reclamo
+
+8. Transferencia de dinero desde Medio de Pago
+
+    `curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":1}'`
+
+    ---
+
+9. Listado de ventas diarias
+
+    `curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"`
+
+    ---
+
+10. Un comercio realizar un reclamo
 
     `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'`
 
