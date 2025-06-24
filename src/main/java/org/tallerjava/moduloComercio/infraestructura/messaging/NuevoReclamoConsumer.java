@@ -23,10 +23,7 @@ import jakarta.inject.Inject;
                 propertyName = "destinationLookup",
                 propertyValue = "java:app/jms/ReclamosMessageQueue"),
         @ActivationConfigProperty
-                //Establece el número máximo de consumidores que estarán procesando
-                //los mensajes
-                //Por defecto este valor es 15 pero lo cambio a 1 para facilitar
-                //la prueba que muestra su funcionamiento
+                //Establece el número máximo de consumidores que estarán procesando los mensajes
                 (propertyName = "maxSession", propertyValue = "1")})
 public class NuevoReclamoConsumer implements MessageListener {
 

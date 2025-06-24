@@ -4,9 +4,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Random;
-
-import org.tallerjava.moduloComercio.dominio.CategoriaReclamo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,8 +43,9 @@ public class ClienteHTTPComercio {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(body);
             String categoria = node.get("response").asText().trim().toLowerCase();
+
             return categoria;
-    }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "SIN_DEFINIR"; 
         }
