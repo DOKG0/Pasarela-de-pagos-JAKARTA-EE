@@ -36,6 +36,17 @@ También se inicializa con 1 administrador con el rol admin, cuyas credenciales 
 2. Desde la terminal, ejecutar el siguiente comando : `sudo docker exec -it ollama ollama pull llama2` --> Este comando descarga el modelo llama2 dentro del contenedor para que puedas usarlo con la API de Ollama.
 3. Desde la terminal, ejecutar el siguiente comando : `sudo docker exec -it ollama ollama run llama2` --> Este comando ejecuta el modelo de lenguje dentro del contenedor
 
+### Nota
+Para el envío del Reclamo se usa un prompt personalizado para que responda unicamente una de la tres opciones.                                                                                     
+--> ```curl -X POST http://localhost:11434/api/generate `
+  `-H "Content-Type: application/json" `
+  `-d '{`
+    `"model": "llama2",`
+    `"prompt": "Analiza el siguiente texto y responde ÚNICAMENTE con una de las siguientes palabras: positivo, negativo o neutro. NO expliques, NO agregues ningún otro texto.` `Solo responde una de esas tres opciones, sin comillas ni signos de puntuación. `
+    `Texto: Aquí iría el contenido de textoReclamo",`
+    `"stream": false`
+`}'```
+
 ---
 
 ### Durante el desarrollo
