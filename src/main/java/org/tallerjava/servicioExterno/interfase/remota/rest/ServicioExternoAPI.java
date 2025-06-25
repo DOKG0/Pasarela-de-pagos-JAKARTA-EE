@@ -48,7 +48,7 @@ public class ServicioExternoAPI {
     public Response notificarTransferencia(DTONotificacionTransferenciaServicioExterno dto) {
         LOG.info("[ServicioExterno] El servicio externo recibió los datos de pago:\n" + dto.toString());
 
-        boolean resultado = servicioExterno.procesarPago();
+        boolean resultado = servicioExterno.procesarPago(dto.getDtoPago().getMarcaTarjeta());
 
         LOG.info("[ServicioExterno] Resultado booleano del servicioExterno: " + resultado);
 

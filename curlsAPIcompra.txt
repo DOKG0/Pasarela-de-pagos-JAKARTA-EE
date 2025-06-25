@@ -1,8 +1,11 @@
 ## NUEVA COMPRA
 
 
-### PAGO ACEPTADO (200) O RECHAZADO (500) (aleatorio)
+### PAGO ACEPTADO (200)
 >   curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'
+
+### PAGO RECHAZADO (500) (OCA)
+>   curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"oca","fechaVtoTarjeta":"2025-05-17"}}'
 
 
 ### 403 Forbidden

@@ -217,6 +217,22 @@ Obtiene un resumen de todas las ventas rechazadas para el comercio especificado.
 
 ---
 
+**Modulo Transferencia API**
+
+1. Realizar transferencia
+```bash
+curl -v http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/notificacion -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"123456789","monto":1000.50,"codigoTransaccion":"TX-123456","idComercio":1}'
+
+```
+Procesa un pago proveniente del Servicio Externo a la pasarela. Se ingresa el dinero al banco de la misma, se deduce el importe por su uso y se envia el importe al Comercio destino.
+
+2. Obtener Resumen de Depositos por Periodo
+```bash
+curl -v "http://localhost:8080/TallerJakartaEEPasarelaPagos/api/transferencia/depositos?idComercio=1&fechaInicial=2025-01-01&fechaFinal=2025-12-31"
+```
+Genera un informe de depositos realizados por la pasarela para el comercio especificado dentro del rango de fechas indicado.
+
+
 #### 4. Flujo principal de negocio
 
 ***Proceso de alta de comercio***
@@ -311,6 +327,10 @@ El módulo de monitoreo permite registrar y visualizar métricas del sistema en 
 
     ---
 2. Realizar pago error:
+    (Tarjeta no aceptada por el Servicio Externo)
+
+    `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"oca","fechaVtoTarjeta":"2025-05-17"}}'`
+
     (Credenciales de otro comercio)
 
     `curl -v --user otrocomercio:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/compra/1/nueva-compra -H "Content-Type: application/json" -d '{"nroCuentaBancoComercio":"112233","idComercio":1, "idPos": 1, "monto":10000.0,"dtoPago":{"nroTarjeta":123456,"marcaTarjeta":"visa","fechaVtoTarjeta":"2025-05-17"}}'`
