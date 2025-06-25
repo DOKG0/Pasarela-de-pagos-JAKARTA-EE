@@ -28,7 +28,7 @@ Si el usuario no tiene contraseña asignada, dejar el valor del parámetro passw
     Al importar el json de grafana a salir un error en las graficas, esto se soluciona creando un dashboard, vas a edit -> jsonmodel y buscas "uid" y lo copias en el json de grafana del proyecto.
 
 
-El proyecto se inicializa con 3 roles (grupos): comercio, admin, servicioExterno
+El proyecto se inicializa con 3 roles (grupos): comercio, admin, servicioExterno. 
 También se inicializa con 1 administrador con el rol admin, cuyas credenciales son **apiadmin:1234**
 
 ### (OPCIONAL) Pasos para la integracion de un modelo de lenguaje.
@@ -78,9 +78,12 @@ EL sistema está organizado en una arquitectura de monolito modular
 
 - ***Módulo seguridad***: Maneja la autenticación, autorización y gestión de usuarios y contraseñas
 
+- ***Módulo monitoreo***: Observa eventos publicados por los distintos módulos y registra datos y métricas de la aplicación en una base de datos independiente para proporcionar observabilidad sobre el comportamiento de la aplicación
+
 - ***Servicios externos***: Simulan la interacción con proveedores de procesamiento de pagos
 
 En la siguiente imagen se muestra un diagrama de componentes con las interacciones que existen entre los mismos. Cabe aclarar que no todos los módulos cuentan con todos las clases mencionadas en el diagrama de estructura general. Por ejemplo, el Módulo Monitoreo es el único que tiene un Logger que registra los datos en InfluxDB y el Módulo Seguridad es el único módulo en esta iteración que provee de una interfaz local (ServiceFacade).
+
 ![diagramas-Diagramas de Componentes](https://github.com/user-attachments/assets/a2d3658c-0e08-49e9-832e-194ef5273664)
 
 En la siguiente imagen se muestran los diagramas de clases de las clases de dominio, sin incluir controladores e interfaces. Se destaca la presencia de entidades replicadas en múltiples módulos pero con atributos en algunos casos diferentes. Todos los módulos operan sobre la misma base de datos, pero cada módulo gestiona un conjunto de tablas independientes de las de otros módulos. Si bien las tablas son independientes, es crucial mantenerlas sincronizadas para asegurar el correcto funcionamiento del sistema. Se busca simplificar el pasaje a microservicios en caso de que el sistema necesitara escalar.
