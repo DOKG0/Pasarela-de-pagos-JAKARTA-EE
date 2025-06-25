@@ -31,6 +31,11 @@ Si el usuario no tiene contraseña asignada, dejar el valor del parámetro passw
 El proyecto se inicializa con 3 roles (grupos): comercio, admin, servicioExterno
 También se inicializa con 1 administrador con el rol admin, cuyas credenciales son **apiadmin:1234**
 
+### (OPCIONAL) Pasos para la integracion de un modelo de lenguaje.
+1. Desde la terminal, ejecutar el siguiente comando : `sudo docker run -d -p 11434:11434 --name ollama ollama/ollama` --> Este comando descargará la imagen de Ollama(gestor de   modelos) y ejecuta un contenedor en segundo plano.
+2. Desde la terminal, ejecutar el siguiente comando : `sudo docker exec -it ollama ollama pull llama2` --> Este comando descarga el modelo llama2 dentro del contenedor para que puedas usarlo con la API de Ollama.
+3. Desde la terminal, ejecutar el siguiente comando : `sudo docker exec -it ollama ollama run llama2` --> Este comando ejecuta el modelo de lenguje dentro del contenedor
+
 ---
 
 ### Durante el desarrollo
@@ -118,6 +123,8 @@ Con este diseño se busca implementar módulos con bajo acoplamiento que sean f�
 - Grafana: Plataforma que se usa para visualizar las métricas almacenadas en influxDB en gráficas en tiempo real
 
 - Jakarta Messaging: Api de java para enviar, recibir y procesar mensajes de forma asíncrona
+
+- Llama2 : modelo de lenguaje utilizado en este caso para categorizar Reclamos(NEGATIVO, NEUTRO, POSITIVO). 
 
 #### 3. API REST
 
@@ -300,6 +307,7 @@ El módulo de monitoreo permite registrar y visualizar métricas del sistema en 
 3. El observador `ObserverMonitoreo` escucha eventos relevantes del sistema como (pagos, reclamos, transferencias) y aumenta los contadores definidos cada vez que ocurre un evento.
 4. Las métricas registradas incluyen:
     - Reclamos de comercio: (`reclamos_comercio_total`)
+    - Reclamos negativos: (`reclamos_negativos`)
     - Pagos realizados: (`pagos_realizados_total`)
     - Pagos rechazados: (`pagos_rechazados_total`)
     - Pagos procesados: (`pagos_procesados_total`)
@@ -385,7 +393,7 @@ done`
 
     ---
 
-10. Un comercio realizar un reclamo
+10. Realizar un reclamo
 
     `curl -v --user nextriguser:1234 http://localhost:8080/TallerJakartaEEPasarelaPagos/api/comercio/1/reclamo -H "Content-Type: application/json" -d '{"contenidoReclamo": "no anda el pos"}'`
 
